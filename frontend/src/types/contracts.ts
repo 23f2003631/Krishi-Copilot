@@ -1,0 +1,168 @@
+export type Crop = "wheat" | "mustard" | "chickpea" | "potato" | "cotton" | "rice";
+export type Channel = "whatsapp" | "sms" | "ivr" | "field_rep" | "retailer";
+export type Objective = "awareness" | "lead_generation" | "retailer_sellthrough" | "field_visit";
+export type Language = "Hindi" | "Punjabi" | "Marathi" | "Gujarati" | "Kannada" | "Bengali" | "English";
+export type RiskLevel = "low" | "medium" | "high";
+export type StockStatus = "healthy" | "watch" | "low" | "out_of_stock";
+export type SourceMode = "mock" | "rules" | "ml" | "hybrid";
+
+export interface ApiEnvelope {
+  schema_version: "syngenta-copilot.v1";
+  request_id: string;
+  generated_at: string;
+  source_mode: SourceMode;
+  warnings: string[];
+}
+
+export interface Geography {
+  state: string;
+  district: string;
+  tehsil?: string;
+  territory_id?: string;
+}
+
+export interface CampaignContextRequest {
+  scenario_id?: string;
+  crop: Crop;
+  product?: string;
+  objective: Objective;
+  week_start_date: string;
+  geography: Geography;
+  audience: {
+    languages: Language[];
+    device_types: string[];
+    max_target_count?: number;
+  };
+  channel_preferences: Channel[];
+  constraints: {
+    low_bandwidth: boolean;
+    human_review_required: boolean;
+    min_stock_cover_days: number;
+  };
+}
+
+export interface CampaignContextResponse extends ApiEnvelope {
+  context_id: string;
+  crop_stage: {
+    stage: string;
+    days_to_stage: number;
+    confidence: number;
+  };
+  grower_summary: {
+    estimated_growers: number;
+    smartphone_share: number;
+    keypad_share: number;
+    primary_language: Language;
+  };
+  weather_insights: WeatherInsight[];
+  inventory_alerts: InventoryAlert[];
+}
+
+export interface WeatherInsight {
+  risk_type: string;
+  risk_level: RiskLevel;
+  summary: string;
+  confidence: number;
+}
+
+export interface InventoryAlert {
+  product: string;
+  stock_status: StockStatus;
+  stock_cover_days: number;
+  affected_retailers: number;
+}
+
+export interface RecommendationResponse extends ApiEnvelope {
+  plan_id: string;
+  context_id: string;
+  recommendations: Recommendation[];
+}
+
+export interface Recommendation {
+  recommendation_id: string;
+  priority_score: number;
+  segment_label: string;
+  target_count: number;
+  crop: Crop;
+  product: string;
+  channel_strategy: { channel: Channel; rank: number; reason: string }[];
+  timing: {
+    recommended_send_date: string;
+    send_window: string;
+    urgency: RiskLevel;
+  };
+  receptivity: {
+    open_probability: number;
+    click_probability: number;
+    confidence: number;
+  };
+  expected_impact: {
+    baseline_click_rate: number;
+    expected_click_rate: number;
+    expected_leads: number;
+  };
+  reason_codes: string[];
+  human_review_flags: string[];
+  blocked: boolean;
+}
+
+export interface ContentGenerationResponse extends ApiEnvelope {
+  content_batch_id: string;
+  variants: ContentVariant[];
+}
+
+export interface ContentVariant {
+  content_id: string;
+  format: "whatsapp" | "sms" | "ivr" | "rep_script" | "visual_concept";
+  language: Language;
+  text: string;
+  cta?: string;
+  estimated_read_time_sec?: number;
+  approval_state: "pending_review" | "approved" | "rejected";
+  safety_flags: string[];
+}
+
+export interface FieldActionsResponse extends ApiEnvelope {
+  plan_id: string;
+  actions: FieldAction[];
+}
+
+export interface FieldAction {
+  action_id: string;
+  rep_id: string;
+  territory_id: string;
+  priority: RiskLevel;
+  due_date: string;
+  action_type: string;
+  summary: string;
+  retailer_ids: string[];
+  recommended_script_id: string;
+  success_metric: string;
+}
+
+export interface AnalyticsSummaryResponse extends ApiEnvelope {
+  plan_id: string;
+  kpis: {
+    target_growers: number;
+    predicted_open_rate: number;
+    predicted_click_rate: number;
+    expected_leads: number;
+    stock_ready_retailers: number;
+    field_actions: number;
+  };
+  charts: {
+    channel_mix: { channel: Channel; share: number }[];
+    weekly_funnel: { week: string; baseline: number; recommended: number }[];
+  };
+}
+
+export interface Scenario {
+  scenario_id: string;
+  name: string;
+  crop: Crop;
+  geography: Geography;
+  description: string;
+  risk_level: RiskLevel;
+  stock_status: StockStatus;
+}
+

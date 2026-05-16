@@ -1,0 +1,17 @@
+[
+  {
+    "scenario_id": "WHEAT_UP_FLOWERING_RISK",
+    "name": "Wheat disease-risk campaign",
+    "crop": "wheat",
+    "geography": {
+      "state": "Uttar Pradesh",
+      "district": "Kanpur Nagar",
+      "tehsil": "Kanpur_Nagar_T023",
+      "territory_id": "TER_001"
+    },
+    "description": "Flowering-stage wheat growers, rising humidity and rainfall risk, healthy Tilt 250 EC stock.",
+    "risk_level": "high",
+    "stock_status": "healthy"
+  }
+]
+
