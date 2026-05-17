@@ -7,10 +7,10 @@ import { SectionHeader } from "@/components/dashboard/section-header";
 import { KpiStatCard } from "@/components/cards/kpi-stat-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getContentVariants, getRecommendations } from "@/services/mock-api";
+import { generateContent, fetchRecommendations } from "@/services/api";
 
 export default async function ContentStudioPage() {
-  const [content, recommendations] = await Promise.all([getContentVariants(), getRecommendations()]);
+  const [content, recommendations] = await Promise.all([generateContent(), fetchRecommendations()]);
   const selected = recommendations.recommendations[0];
 
   return (

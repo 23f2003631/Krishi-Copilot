@@ -7,10 +7,10 @@ import { OperationalTable } from "@/components/tables/operational-table";
 import { SegmentEngagementChart } from "@/components/charts/segment-engagement-chart";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getAnalyticsSummary, getFieldActions } from "@/services/mock-api";
+import { fetchAnalyticsSummary, fetchFieldActions } from "@/services/api";
 
 export default async function FieldActionsPage() {
-  const [fieldActions, analytics] = await Promise.all([getFieldActions(), getAnalyticsSummary()]);
+  const [fieldActions, analytics] = await Promise.all([fetchFieldActions(), fetchAnalyticsSummary()]);
 
   return (
     <DashboardShell activePath="/field-actions">

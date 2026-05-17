@@ -8,10 +8,10 @@ import { SectionHeader } from "@/components/dashboard/section-header";
 import { CampaignFunnelChart } from "@/components/charts/campaign-funnel-chart";
 import { ChannelPerformanceChart } from "@/components/charts/channel-performance-chart";
 import { Button } from "@/components/ui/button";
-import { getAnalyticsSummary, getRecommendations } from "@/services/mock-api";
+import { fetchAnalyticsSummary, fetchRecommendations } from "@/services/api";
 
 export default async function RecommendationsPage() {
-  const [recommendations, analytics] = await Promise.all([getRecommendations(), getAnalyticsSummary()]);
+  const [recommendations, analytics] = await Promise.all([fetchRecommendations(), fetchAnalyticsSummary()]);
   const top = recommendations.recommendations[0];
 
   return (

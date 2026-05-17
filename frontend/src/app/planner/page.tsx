@@ -15,16 +15,24 @@ import { SegmentOpportunityCard } from "@/components/operations/segment-opportun
 import { WeatherTriggerPanel } from "@/components/operations/weather-trigger-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getAnalyticsSummary, getCampaignContext, getFieldActions, getRecommendations, getScenarios } from "@/services/mock-api";
+import { fetchAnalyticsSummary, createCampaignContext, fetchFieldActions, fetchRecommendations, fetchScenarios } from "@/services/api";
+import { scenarios as mockScenarios, campaignContext as mockContext, recommendationResponse as mockRecs, fieldActionsResponse as mockFieldActions, analyticsSummaryResponse as mockAnalytics } from "@/data/mock-data";
 
 export default async function PlannerPage() {
-  const [scenarios, context, recommendations, fieldActions, analytics] = await Promise.all([
-    getScenarios(),
-    getCampaignContext(),
-    getRecommendations(),
-    getFieldActions(),
-    getAnalyticsSummary()
+  const [scenariosResp, context, recommendations, fieldActions, analytics] = await Promise.all([
+    fetchScenarios(),
+    createCampaignContext({
+      crop: "wheat", product: "Tilt 250 EC", objective: "lead_generation",
+      week_start_date: "2026-02-16", geography: { state: "Uttar Pradesh", district: "Kanpur Nagar" },
+      audience: { languages: ["Hindi"], device_types: ["smartphone"] },
+      channel_preferences: ["whatsapp", "sms", "field_rep"],
+      constraints: { low_bandwidth: true, human_review_required: true, min_stock_cover_days: 10 },
+    }),
+    fetchRecommendations("CTX_001"),
+    fetchFieldActions("PLAN_001"),
+    fetchAnalyticsSummary("PLAN_001"),
   ]);
+  const scenarios = scenariosResp.scenarios;
   const topRecommendation = recommendations.recommendations[0];
 
   return (
