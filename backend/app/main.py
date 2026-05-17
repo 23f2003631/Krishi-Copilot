@@ -1,17 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import logging
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+from app.config import settings
 from app.routers import analytics, content, context, export, field_actions, recommendations, scenarios
 
 app = FastAPI(
     title="Syngenta Krishi Campaign Copilot API",
     version="0.1.0",
-    description="Mock-first API contracts for crop-stage-aware campaign orchestration.",
+    description="Intelligence-layer API for crop-stage-aware campaign orchestration.",
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
