@@ -1,0 +1,15 @@
+{
+  "schema_version": "syngenta-copilot.v1",
+  "request_id": "REQ_APPROVAL",
+  "generated_at": "2026-05-17T10:05:00+05:30",
+  "source_mode": "rules",
+  "warnings": [],
+  "content_id": "CNT_001_HI_WA",
+  "content_batch_id": "CNT_001",
+  "plan_id": "PLAN_001",
+  "recommendation_id": "REC_001",
+  "approval_state": "approved",
+  "reviewer": "demo_reviewer",
+  "approved_at": "2026-05-17T10:05:00+05:30",
+  "field_actions_unlocked": true
+}

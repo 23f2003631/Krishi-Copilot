@@ -19,7 +19,7 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-ai px-3 py-1 text-xs font-semibold text-white">{recommendation.priority_score}</span>
+            <span className="rounded-full bg-olive px-3 py-1 text-xs font-semibold text-white">{recommendation.priority_score}</span>
             <RiskBadge level={recommendation.timing.urgency} />
             {recommendation.blocked ? <Badge variant="danger">Blocked by guardrail</Badge> : <Badge variant="success">Launch-ready</Badge>}
           </div>
@@ -35,16 +35,16 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
       </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-3">
-        <MiniMetric label="Open probability" value={formatPercent(recommendation.receptivity.open_probability)} />
-        <MiniMetric label="Click probability" value={formatPercent(recommendation.receptivity.click_probability)} />
-        <MiniMetric label="Confidence" value={formatPercent(recommendation.receptivity.confidence)} />
+        <MiniMetric label="Advisory open probability" value={formatPercent(recommendation.receptivity.open_probability)} />
+        <MiniMetric label="Grower response probability" value={formatPercent(recommendation.receptivity.click_probability)} />
+        <MiniMetric label="Recommendation confidence" value={formatPercent(recommendation.receptivity.confidence)} />
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded-[18px] border border-border bg-white p-4">
           <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-            <CalendarClock className="h-4 w-4 text-ai" />
-            Timing
+            <CalendarClock className="h-4 w-4 text-warning" />
+            Crop window timing
           </div>
           <p className="mt-2 text-xs leading-5 text-muted">
             Send on {recommendation.timing.recommended_send_date}, window {recommendation.timing.send_window}
@@ -53,7 +53,7 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
         <div className="rounded-[18px] border border-border bg-white p-4">
           <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <UserRoundCheck className="h-4 w-4 text-field" />
-            Why now
+            Agronomic rationale
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
             {recommendation.reason_codes.map((reason) => (
@@ -84,4 +84,3 @@ function MiniMetric({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-

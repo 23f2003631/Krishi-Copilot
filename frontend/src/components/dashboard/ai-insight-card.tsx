@@ -5,7 +5,7 @@ export function AIInsightCard({ title, description }: { title: string; descripti
   return (
     <DashboardCard>
       <div className="flex items-start gap-4">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ai/10 text-ai">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-field/10 text-field">
           <BrainCircuit className="h-5 w-5" />
         </div>
         <div>
@@ -16,4 +16,3 @@ export function AIInsightCard({ title, description }: { title: string; descripti
     </DashboardCard>
   );
 }
-

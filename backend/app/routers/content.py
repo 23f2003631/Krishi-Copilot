@@ -1,26 +1,17 @@
 from fastapi import APIRouter
 
-from app.models.contracts import ContentApprovalRequest, ContentGenerationRequest, ContentGenerationResponse
+from app.models.contracts import ContentApprovalRequest, ContentApprovalResponse, ContentGenerationRequest, ContentGenerationResponse
+from app.services.content_generator import approve_content as approve_content_service
 from app.services.content_generator import generate_content
 
 router = APIRouter()
 
 
 @router.post("/generate", response_model=ContentGenerationResponse)
-def create_content(_: ContentGenerationRequest):
-    return generate_content()
+def create_content(request: ContentGenerationRequest):
+    return generate_content(request)
 
 
-@router.post("/approve")
+@router.post("/approve", response_model=ContentApprovalResponse)
 def approve_content(request: ContentApprovalRequest):
-    return {
-        "schema_version": "syngenta-copilot.v1",
-        "request_id": "REQ_APPROVAL",
-        "generated_at": "2026-05-17T10:05:00+05:30",
-        "source_mode": "rules",
-        "content_id": request.content_id,
-        "approval_state": request.approval_state,
-        "reviewer": request.reviewer,
-        "warnings": [],
-    }
-
+    return approve_content_service(request)

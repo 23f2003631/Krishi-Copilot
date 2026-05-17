@@ -1,0 +1,62 @@
+{
+  "schema_version": "syngenta-copilot.v1",
+  "request_id": "REQ_003",
+  "content_batch_id": "CNT_001",
+  "plan_id": "PLAN_001",
+  "recommendation_id": "REC_001",
+  "generated_at": "2026-05-17T10:02:00+05:30",
+  "source_mode": "hybrid",
+  "warnings": [],
+  "variants": [
+    {
+      "content_id": "CNT_001_HI_WA",
+      "format": "whatsapp",
+      "language": "Hindi",
+      "text": "गेहूं की फसल फूल आने की अवस्था के पास है। नमी और हल्की बारिश के कारण रोग का जोखिम बढ़ सकता है। अपने नजदीकी Syngenta प्रतिनिधि या retailer से Tilt 250 EC की उपलब्धता और सही सलाह लें।",
+      "cta": "आज ही स्थानीय प्रतिनिधि से संपर्क करें",
+      "estimated_read_time_sec": 18,
+      "approval_state": "pending_review",
+      "safety_flags": []
+    },
+    {
+      "content_id": "CNT_001_HI_SMS",
+      "format": "sms",
+      "language": "Hindi",
+      "text": "गेहूं में नमी से रोग जोखिम बढ़ सकता है। Tilt 250 EC की उपलब्धता और सही सलाह के लिए Syngenta प्रतिनिधि से संपर्क करें।",
+      "cta": "प्रतिनिधि से संपर्क करें",
+      "estimated_read_time_sec": 12,
+      "approval_state": "pending_review",
+      "safety_flags": []
+    },
+    {
+      "content_id": "CNT_001_HI_IVR",
+      "format": "ivr",
+      "language": "Hindi",
+      "text": "नमस्कार। आपके क्षेत्र में गेहूं की फसल फूल आने की अवस्था के पास है। नमी और हल्की बारिश से रोग का जोखिम बढ़ सकता है। Tilt 250 EC की उपलब्धता और सही सलाह के लिए अपने स्थानीय Syngenta प्रतिनिधि या नजदीकी retailer से संपर्क करें।",
+      "cta": "स्थानीय प्रतिनिधि से बात करें",
+      "estimated_read_time_sec": 28,
+      "approval_state": "pending_review",
+      "safety_flags": []
+    },
+    {
+      "content_id": "CNT_001_HI_REP",
+      "format": "rep_script",
+      "language": "Hindi",
+      "text": "Grower से फसल अवस्था पूछें। अगर गेहूं flowering के पास है और खेत में नमी है, तो रोग जोखिम पर सरल advisory दें। कोई dosage claim न करें। Tilt 250 EC की availability retailer से confirm कराएं और grower को local Syngenta सलाह से जोड़ें।",
+      "cta": "Lead confirm करें",
+      "estimated_read_time_sec": 34,
+      "approval_state": "pending_review",
+      "safety_flags": []
+    },
+    {
+      "content_id": "CNT_001_EN_VISUAL",
+      "format": "visual_concept",
+      "language": "English",
+      "text": "A clean Hindi field poster concept: wheat crop close-up, small rain and humidity icons, clear Syngenta representative CTA, and retailer availability note. No dosage, no yield promise.",
+      "cta": "Use for reviewed creative brief",
+      "estimated_read_time_sec": 15,
+      "approval_state": "pending_review",
+      "safety_flags": []
+    }
+  ]
+}

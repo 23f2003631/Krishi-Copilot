@@ -4,11 +4,11 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-[14px] px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ai/25 disabled:pointer-events-none disabled:opacity-50 [&_svg]:h-4 [&_svg]:w-4",
+  "inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-[14px] px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime/25 disabled:pointer-events-none disabled:opacity-50 [&_svg]:h-4 [&_svg]:w-4",
   {
     variants: {
       variant: {
-        default: "bg-ai text-white shadow-[0_12px_28px_rgba(31,107,255,0.22)] hover:bg-ai/90",
+        default: "bg-olive text-white shadow-[0_12px_28px_rgba(49,72,58,0.2)] hover:bg-[#263a2e]",
         secondary: "border border-border bg-card text-foreground hover:bg-card-soft",
         ghost: "text-muted hover:bg-card-soft hover:text-foreground",
         danger: "bg-danger text-white hover:bg-danger/90"
@@ -37,4 +37,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, va
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-

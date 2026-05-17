@@ -9,21 +9,25 @@
   --color-card: #ffffff;
   --color-card-soft: #fbfdfd;
   --color-shell: #f8fbfb;
-  --color-ai: #1f6bff;
-  --color-field: #00a651;
-  --color-success: #48b756;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-cyan: #22d3ee;
+  --color-ai: #2f6f73;
+  --color-field: #2f8a4b;
+  --color-olive: #31483a;
+  --color-lime: #7fb12b;
+  --color-success: #3f8f4a;
+  --color-warning: #c9891a;
+  --color-danger: #b85a3d;
+  --color-cyan: #3a9ba1;
 }
 
 :root {
   --surface-shell: #f8fbfb;
   --surface-card: #ffffff;
   --surface-card-soft: #fbfdfd;
-  --accent-ai: #1f6bff;
-  --accent-field: #00a651;
-  --accent-cyan: #22d3ee;
+  --accent-ai: #2f6f73;
+  --accent-field: #2f8a4b;
+  --accent-cyan: #3a9ba1;
+  --accent-olive: #31483a;
+  --accent-lime: #7fb12b;
   --border-soft: #e8eef0;
   --text-main: #111827;
   --text-muted: #6b7280;
@@ -42,7 +46,8 @@ body {
   margin: 0;
   background:
     radial-gradient(circle at 16% 12%, rgba(255, 255, 255, 0.85), transparent 28%),
-    linear-gradient(135deg, #edf4f6 0%, #e6f0f2 45%, #eef7f0 100%);
+    radial-gradient(circle at 82% 8%, rgba(127, 177, 43, 0.13), transparent 26%),
+    linear-gradient(135deg, #edf4f6 0%, #e9f0ed 45%, #f0f3ea 100%);
   color: var(--text-main);
   font-family: var(--font-sans);
   letter-spacing: 0;
@@ -60,7 +65,34 @@ textarea {
 }
 
 .card-shadow {
-  box-shadow: 0 16px 48px rgba(31, 56, 88, 0.08);
+  box-shadow: 0 14px 42px rgba(31, 56, 88, 0.075);
+}
+
+.control-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(251, 253, 253, 0.98) 100%),
+    #ffffff;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 14px 42px rgba(31, 56, 88, 0.075);
+}
+
+.control-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, rgba(49, 72, 58, 0.88), rgba(127, 177, 43, 0.58));
+  opacity: 0.72;
+}
+
+.field-grid {
+  background-image:
+    linear-gradient(rgba(49, 72, 58, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(49, 72, 58, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 .soft-scrollbar {
@@ -77,4 +109,3 @@ textarea {
   background: #cbd7dd;
   border-radius: 999px;
 }
-
