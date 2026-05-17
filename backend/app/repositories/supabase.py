@@ -75,30 +75,71 @@ class SupabaseCampaignRepository:
         return self._try(action, fallback)
 
     def generate_content(self, request: ContentGenerationRequest) -> dict:
-        fallback = self.fallback.generate_content(request)
-
         def action() -> dict:
-            for variant in fallback["variants"]:
+            rows = self._select("content_variants", {"plan_id": request.plan_id, "recommendation_id": request.recommendation_id})
+            if rows:
+                fallback = self.fallback.generate_content(request)
+                response = {key: value for key, value in fallback.items() if key != "variants"}
+                response["variants"] = []
+                for row in rows:
+                    flags = row.get("safety_flags") or []
+                    src = next((f.split(":", 1)[1] for f in flags if f.startswith("source:")), "cache")
+                    reason = next((f.split(":", 1)[1] for f in flags if f.startswith("reason:")), None)
+                    clean_flags = [f for f in flags if not f.startswith("source:") and not f.startswith("reason:")]
+                    
+                    response["variants"].append({
+                        "content_id": row["content_id"],
+                        "format": row["format"],
+                        "language": row["language"],
+                        "text": row["content_text"],
+                        "cta": row.get("cta"),
+                        "estimated_read_time_sec": row.get("estimated_read_time_sec"),
+                        "approval_state": row["approval_state"],
+                        "safety_flags": clean_flags,
+                        "generation_source": src,
+                        "fallback_reason": reason,
+                    })
+                return response
+            return {}
+        
+        try:
+            return action()
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).warning("Supabase cache lookup failed: %s", exc)
+            return {}
+
+    def save_content(self, response: dict) -> dict:
+        def action() -> dict:
+            for variant in response["variants"]:
+                flags = variant.get("safety_flags", [])
+                src = variant.get("generation_source")
+                if src:
+                    flags.append(f"source:{src}")
+                reason = variant.get("fallback_reason")
+                if reason:
+                    flags.append(f"reason:{reason}")
+                    
                 self._upsert(
                     "content_variants",
                     {
                         "content_id": variant["content_id"],
-                        "content_batch_id": fallback["content_batch_id"],
-                        "plan_id": fallback["plan_id"],
-                        "recommendation_id": fallback["recommendation_id"],
+                        "content_batch_id": response.get("content_batch_id", ""),
+                        "plan_id": response["plan_id"],
+                        "recommendation_id": response["recommendation_id"],
                         "format": variant["format"],
                         "language": variant["language"],
                         "content_text": variant["text"],
                         "cta": variant.get("cta"),
                         "estimated_read_time_sec": variant.get("estimated_read_time_sec"),
                         "approval_state": variant["approval_state"],
-                        "safety_flags": variant["safety_flags"],
+                        "safety_flags": flags,
                     },
                     "content_id",
                 )
-            return fallback
+            return response
 
-        return self._try(action, fallback)
+        return self._try(action, response)
 
     def approve_content(self, request: ContentApprovalRequest) -> dict:
         fallback = self.fallback.approve_content(request)
@@ -158,9 +199,18 @@ class SupabaseCampaignRepository:
     def _try(self, action, fallback: dict) -> dict:
         try:
             return action()
-        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError):
+        except urllib.error.HTTPError as exc:
+            import logging
+            logging.getLogger(__name__).warning("Supabase HTTP operation failed: %s - %s", exc, exc.read().decode())
             if self.settings.demo_cache_enabled:
-                fallback["warnings"] = [*fallback.get("warnings", []), "Supabase unavailable; served demo cache"]
+                fallback["warnings"] = [*fallback.get("warnings", []), f"Supabase unavailable ({exc}); served demo cache"]
+                return fallback
+            raise
+        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+            import logging
+            logging.getLogger(__name__).warning("Supabase operation failed: %s", exc)
+            if self.settings.demo_cache_enabled:
+                fallback["warnings"] = [*fallback.get("warnings", []), f"Supabase unavailable ({exc}); served demo cache"]
                 return fallback
             raise
 

@@ -152,6 +152,8 @@ class ContentVariant(BaseModel):
     estimated_read_time_sec: int | None = Field(default=None, ge=0)
     approval_state: ApprovalState = "pending_review"
     safety_flags: list[str] = []
+    generation_source: str | None = None
+    fallback_reason: str | None = None
 
 
 class ContentGenerationResponse(ApiEnvelope):

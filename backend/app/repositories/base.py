@@ -16,6 +16,9 @@ class CampaignRepository(Protocol):
     def generate_content(self, request: ContentGenerationRequest) -> dict:
         ...
 
+    def save_content(self, response: dict) -> dict:
+        ...
+
     def approve_content(self, request: ContentApprovalRequest) -> dict:
         ...
 

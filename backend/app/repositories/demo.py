@@ -60,6 +60,10 @@ class DemoRepository:
             text_lower = variant["text"].lower()
             variant["safety_flags"] = [phrase for phrase in BANNED_PHRASES if phrase in text_lower]
             variant["approval_state"] = "pending_review"
+            variant["generation_source"] = "demo_cache"
+        return response
+
+    def save_content(self, response: dict) -> dict:
         return response
 
     def approve_content(self, request: ContentApprovalRequest) -> dict:
