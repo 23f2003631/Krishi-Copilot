@@ -17,10 +17,10 @@ export default async function FieldActionsPage() {
       <div className="space-y-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-medium uppercase text-muted">Field Actions</p>
-            <h1 className="mt-1 text-[22px] font-semibold leading-7 text-foreground">Operational plan for reps and retailers</h1>
+            <p className="text-xs font-medium uppercase text-muted">Field Execution</p>
+            <h1 className="mt-1 text-[22px] font-semibold leading-7 text-foreground">Territory deployment plan for reps and retailers</h1>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-              The approved campaign becomes a field-ready work queue with due dates, retailer checks, success metrics, and exportable briefs.
+              The approved advisory becomes a territory-ready work queue with due dates, retailer coverage checks, stock gates, and exportable rep briefs.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -36,15 +36,15 @@ export default async function FieldActionsPage() {
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <KpiStatCard label="Field Actions" value={analytics.kpis.field_actions.toString()} trend="Due by Feb 18" icon={ClipboardList} tone="ai" />
-          <KpiStatCard label="Stock-Ready Retailers" value={analytics.kpis.stock_ready_retailers.toString()} trend="18 days cover" icon={Store} tone="success" />
-          <KpiStatCard label="Target Growers" value={analytics.kpis.target_growers.toLocaleString()} trend="High receptivity" icon={UsersRound} tone="field" />
-          <KpiStatCard label="Inventory Guardrail" value="Pass" trend="No launch block" icon={PackageCheck} tone="success" />
+          <KpiStatCard label="Field Work Orders" value={analytics.kpis.field_actions.toString()} trend="due by Feb 18" metadata="rep-owned" icon={ClipboardList} tone="ai" />
+          <KpiStatCard label="Stock-Ready Retailers" value={analytics.kpis.stock_ready_retailers.toString()} trend="18 days cover" metadata="Kanpur cluster" icon={Store} tone="success" />
+          <KpiStatCard label="Target Growers" value={analytics.kpis.target_growers.toLocaleString()} trend="high receptivity" metadata="wheat cohort" icon={UsersRound} tone="field" />
+          <KpiStatCard label="Stock Gate" value="Pass" trend="no launch block" metadata="Tilt 250 EC" icon={PackageCheck} tone="success" />
         </div>
 
         <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
           <DashboardCard>
-            <SectionHeader icon={ClipboardList} title="Rep Action Board" description="A dense work queue for territory execution." />
+            <SectionHeader icon={ClipboardList} title="Rep Territory Board" description="A dense deployment queue for territory execution." />
             <div className="mt-5">
               <OperationalTable actions={fieldActions.actions} />
             </div>
@@ -52,15 +52,15 @@ export default async function FieldActionsPage() {
 
           <div className="grid gap-5">
             <DashboardCard>
-              <SectionHeader icon={PackageCheck} title="Retailer Alerts" description="Demand generation is gated by available local stock." />
+              <SectionHeader icon={PackageCheck} title="Retailer Coverage Alerts" description="Grower demand is gated by available local stock." />
               <div className="mt-5 space-y-3">
-                <RetailerAlert label="RTL_0091" status="Healthy stock" note="Confirm Tilt 250 EC display before WhatsApp push." />
-                <RetailerAlert label="RTL_0112" status="Healthy stock" note="Prepare field-rep talking points and lead log." />
-                <RetailerAlert label="Sikar mustard scenario" status="Hold campaign" note="Score 250 EC stock cover is below threshold." warning />
+                <RetailerAlert label="RTL_0091 | Kanpur wheat cluster" status="Stock sufficient" note="Confirm Tilt 250 EC display before Hindi advisory push." />
+                <RetailerAlert label="RTL_0112 | T023 village route" status="Stock sufficient" note="Prepare rep talking points and grower inquiry log." />
+                <RetailerAlert label="Sikar mustard stock gate" status="Hold outreach" note="Score 250 EC stock cover is below territory threshold." warning />
               </div>
             </DashboardCard>
             <DashboardCard>
-              <SectionHeader icon={UsersRound} title="Segment Engagement" description="Predicted outcomes versus baseline." />
+              <SectionHeader icon={UsersRound} title="Grower Cohort Engagement" description="Predicted outcomes versus baseline." />
               <div className="mt-5 h-[240px]">
                 <SegmentEngagementChart />
               </div>
@@ -83,4 +83,3 @@ function RetailerAlert({ label, status, note, warning }: { label: string; status
     </div>
   );
 }
-

@@ -1,0 +1,116 @@
+{
+  "schema_version": "syngenta-copilot.v1",
+  "request_id": "REQ_002",
+  "plan_id": "PLAN_001",
+  "context_id": "CTX_001",
+  "generated_at": "2026-05-17T10:01:00+05:30",
+  "source_mode": "rules",
+  "warnings": [],
+  "recommendations": [
+    {
+      "recommendation_id": "REC_001",
+      "priority_score": 91,
+      "segment_label": "Hindi smartphone wheat cohort near flowering",
+      "target_count": 860,
+      "crop": "wheat",
+      "product": "Tilt 250 EC",
+      "channel_strategy": [
+        { "channel": "whatsapp", "rank": 1, "reason": "High smartphone share" },
+        { "channel": "field_rep", "rank": 2, "reason": "Trust-sensitive disease advisory" },
+        { "channel": "sms", "rank": 3, "reason": "Backup for low bandwidth" }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-18",
+        "send_window": "07:00-10:00",
+        "urgency": "high"
+      },
+      "receptivity": {
+        "open_probability": 0.31,
+        "click_probability": 0.08,
+        "confidence": 0.71
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.08,
+        "expected_leads": 69
+      },
+      "reason_codes": [
+        "Flowering window detected",
+        "Humidity and light rainfall rising",
+        "Stock sufficiency above threshold",
+        "Hindi is primary grower language"
+      ],
+      "human_review_flags": ["agronomy_review_required"],
+      "blocked": false
+    },
+    {
+      "recommendation_id": "REC_002",
+      "priority_score": 77,
+      "segment_label": "Keypad wheat cohort requiring SMS follow-up",
+      "target_count": 212,
+      "crop": "wheat",
+      "product": "Tilt 250 EC",
+      "channel_strategy": [
+        { "channel": "sms", "rank": 1, "reason": "Keypad eligible and low bandwidth" },
+        { "channel": "field_rep", "rank": 2, "reason": "Rep trust helps convert advisory" },
+        { "channel": "retailer", "rank": 3, "reason": "Retailer confirmation needed" }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-18",
+        "send_window": "08:00-11:00",
+        "urgency": "medium"
+      },
+      "receptivity": {
+        "open_probability": 0.24,
+        "click_probability": 0.04,
+        "confidence": 0.64
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.03,
+        "expected_click_rate": 0.04,
+        "expected_leads": 8
+      },
+      "reason_codes": [
+        "Keypad reach is material",
+        "SMS is resilient in low bandwidth",
+        "Field-rep coverage available"
+      ],
+      "human_review_flags": ["agronomy_review_required"],
+      "blocked": false
+    },
+    {
+      "recommendation_id": "REC_003",
+      "priority_score": 64,
+      "segment_label": "Sikar mustard stock-gated sell-through window",
+      "target_count": 740,
+      "crop": "mustard",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        { "channel": "field_rep", "rank": 1, "reason": "Replenishment before grower blast" },
+        { "channel": "retailer", "rank": 2, "reason": "Retailer stock is launch blocker" }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-20",
+        "send_window": "Hold",
+        "urgency": "high"
+      },
+      "receptivity": {
+        "open_probability": 0.28,
+        "click_probability": 0.06,
+        "confidence": 0.68
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0,
+        "expected_leads": 0
+      },
+      "reason_codes": [
+        "Stock cover only 4 days",
+        "Sell-through outreach blocked",
+        "Rep replenishment action needed first"
+      ],
+      "human_review_flags": ["stock_replenishment_required"],
+      "blocked": true
+    }
+  ]
+}

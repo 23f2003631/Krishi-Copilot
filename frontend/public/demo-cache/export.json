@@ -1,0 +1,12 @@
+{
+  "schema_version": "syngenta-copilot.v1",
+  "request_id": "REQ_EXPORT",
+  "generated_at": "2026-05-17T10:06:00+05:30",
+  "source_mode": "mock",
+  "warnings": [],
+  "export_id": "EXP_001",
+  "plan_id": "PLAN_001",
+  "export_type": "csv",
+  "formats": ["csv", "rep_brief", "whatsapp_pack"],
+  "download_url": "/demo/export/PLAN_001.zip"
+}

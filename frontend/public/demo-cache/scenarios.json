@@ -1,17 +1,51 @@
-[
-  {
-    "scenario_id": "WHEAT_UP_FLOWERING_RISK",
-    "name": "Wheat disease-risk campaign",
-    "crop": "wheat",
-    "geography": {
-      "state": "Uttar Pradesh",
-      "district": "Kanpur Nagar",
-      "tehsil": "Kanpur_Nagar_T023",
-      "territory_id": "TER_001"
+{
+  "schema_version": "syngenta-copilot.v1",
+  "request_id": "REQ_SCENARIOS_CACHE",
+  "generated_at": "2026-05-17T10:00:00+05:30",
+  "source_mode": "mock",
+  "warnings": [],
+  "scenarios": [
+    {
+      "scenario_id": "WHEAT_UP_FLOWERING_RISK",
+      "name": "Wheat flowering disease-weather window",
+      "crop": "wheat",
+      "geography": {
+        "state": "Uttar Pradesh",
+        "district": "Kanpur Nagar",
+        "tehsil": "Kanpur_Nagar_T023",
+        "territory_id": "TER_001"
+      },
+      "description": "Flowering-stage wheat cohorts, rising humidity/rainfall pressure, and healthy Tilt 250 EC retailer coverage.",
+      "risk_level": "high",
+      "stock_status": "healthy"
     },
-    "description": "Flowering-stage wheat growers, rising humidity and rainfall risk, healthy Tilt 250 EC stock.",
-    "risk_level": "high",
-    "stock_status": "healthy"
-  }
-]
-
+    {
+      "scenario_id": "MUSTARD_RJ_LOW_STOCK",
+      "name": "Mustard stock-gated advisory window",
+      "crop": "mustard",
+      "geography": {
+        "state": "Rajasthan",
+        "district": "Sikar",
+        "tehsil": "Sikar_T011",
+        "territory_id": "TER_021"
+      },
+      "description": "Grower outreach should pause because local Score 250 EC stock sufficiency is below the launch threshold.",
+      "risk_level": "medium",
+      "stock_status": "low"
+    },
+    {
+      "scenario_id": "POTATO_WB_IVR_READY",
+      "name": "Potato humid-weather IVR readiness",
+      "crop": "potato",
+      "geography": {
+        "state": "West Bengal",
+        "district": "Hooghly",
+        "tehsil": "Hooghly_T006",
+        "territory_id": "TER_044"
+      },
+      "description": "Cool humid weather suggests voice-first Bengali advisory, retailer check, and watch-status stock handling.",
+      "risk_level": "high",
+      "stock_status": "watch"
+    }
+  ]
+}

@@ -2,9 +2,13 @@ export type Crop = "wheat" | "mustard" | "chickpea" | "potato" | "cotton" | "ric
 export type Channel = "whatsapp" | "sms" | "ivr" | "field_rep" | "retailer";
 export type Objective = "awareness" | "lead_generation" | "retailer_sellthrough" | "field_visit";
 export type Language = "Hindi" | "Punjabi" | "Marathi" | "Gujarati" | "Kannada" | "Bengali" | "English";
+export type DeviceType = "smartphone" | "keypad" | "unknown";
 export type RiskLevel = "low" | "medium" | "high";
 export type StockStatus = "healthy" | "watch" | "low" | "out_of_stock";
 export type SourceMode = "mock" | "rules" | "ml" | "hybrid";
+export type ContentFormat = "whatsapp" | "sms" | "ivr" | "rep_script" | "visual_concept";
+export type ApprovalState = "pending_review" | "approved" | "rejected";
+export type Role = "campaign_manager" | "territory_manager" | "field_rep" | "retailer_support";
 
 export interface ApiEnvelope {
   schema_version: "syngenta-copilot.v1";
@@ -30,7 +34,7 @@ export interface CampaignContextRequest {
   geography: Geography;
   audience: {
     languages: Language[];
-    device_types: string[];
+    device_types: DeviceType[];
     max_target_count?: number;
   };
   channel_preferences: Channel[];
@@ -108,18 +112,31 @@ export interface Recommendation {
 
 export interface ContentGenerationResponse extends ApiEnvelope {
   content_batch_id: string;
+  plan_id: string;
+  recommendation_id: string;
   variants: ContentVariant[];
 }
 
 export interface ContentVariant {
   content_id: string;
-  format: "whatsapp" | "sms" | "ivr" | "rep_script" | "visual_concept";
+  format: ContentFormat;
   language: Language;
   text: string;
   cta?: string;
   estimated_read_time_sec?: number;
-  approval_state: "pending_review" | "approved" | "rejected";
+  approval_state: ApprovalState;
   safety_flags: string[];
+}
+
+export interface ContentApprovalResponse extends ApiEnvelope {
+  content_id: string;
+  content_batch_id: string;
+  plan_id: string;
+  recommendation_id: string;
+  approval_state: ApprovalState;
+  reviewer?: string;
+  approved_at?: string;
+  field_actions_unlocked: boolean;
 }
 
 export interface FieldActionsResponse extends ApiEnvelope {
@@ -156,6 +173,10 @@ export interface AnalyticsSummaryResponse extends ApiEnvelope {
   };
 }
 
+export interface ScenarioResponse extends ApiEnvelope {
+  scenarios: Scenario[];
+}
+
 export interface Scenario {
   scenario_id: string;
   name: string;
@@ -166,3 +187,10 @@ export interface Scenario {
   stock_status: StockStatus;
 }
 
+export interface ExportResponse extends ApiEnvelope {
+  export_id: string;
+  plan_id: string;
+  export_type: "csv" | "whatsapp_pack" | "rep_brief";
+  formats: string[];
+  download_url: string;
+}

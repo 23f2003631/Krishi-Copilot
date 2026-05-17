@@ -3,15 +3,14 @@ import { Sidebar } from "@/components/layout/sidebar";
 
 export function DashboardShell({ children, activePath }: { children: React.ReactNode; activePath: string }) {
   return (
-    <main className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto grid min-h-[calc(100vh-48px)] max-w-[1440px] grid-cols-1 overflow-hidden rounded-[32px] bg-shell shell-shadow lg:min-h-[calc(100vh-64px)] lg:grid-cols-[248px_1fr]">
+    <main className="min-h-screen bg-background p-3 sm:p-5 lg:p-6">
+      <div className="field-grid mx-auto grid min-h-[calc(100vh-40px)] max-w-[1440px] grid-cols-1 overflow-hidden rounded-[32px] bg-shell shell-shadow lg:min-h-[calc(100vh-48px)] lg:grid-cols-[248px_1fr]">
         <Sidebar activePath={activePath} />
-        <section className="min-w-0 p-5 sm:p-6 lg:p-8">
+        <section className="min-w-0 p-4 sm:p-5 lg:p-6">
           <DashboardHeader />
-          <div className="mt-5">{children}</div>
+          <div className="mt-4">{children}</div>
         </section>
       </div>
     </main>
   );
 }
-

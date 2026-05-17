@@ -5,9 +5,14 @@ from pydantic import BaseModel, Field
 Crop = Literal["wheat", "mustard", "chickpea", "potato", "cotton", "rice"]
 Channel = Literal["whatsapp", "sms", "ivr", "field_rep", "retailer"]
 Objective = Literal["awareness", "lead_generation", "retailer_sellthrough", "field_visit"]
+Language = Literal["Hindi", "Punjabi", "Marathi", "Gujarati", "Kannada", "Bengali", "English"]
+DeviceType = Literal["smartphone", "keypad", "unknown"]
 RiskLevel = Literal["low", "medium", "high"]
 StockStatus = Literal["healthy", "watch", "low", "out_of_stock"]
 SourceMode = Literal["mock", "rules", "ml", "hybrid"]
+ContentFormat = Literal["whatsapp", "sms", "ivr", "rep_script", "visual_concept"]
+ApprovalState = Literal["pending_review", "approved", "rejected"]
+Role = Literal["campaign_manager", "territory_manager", "field_rep", "retailer_support"]
 
 
 class Geography(BaseModel):
@@ -18,8 +23,8 @@ class Geography(BaseModel):
 
 
 class Audience(BaseModel):
-    languages: list[str]
-    device_types: list[str]
+    languages: list[Language]
+    device_types: list[DeviceType]
     max_target_count: int | None = Field(default=None, ge=1)
 
 
@@ -133,24 +138,26 @@ class RecommendationResponse(ApiEnvelope):
 class ContentGenerationRequest(BaseModel):
     plan_id: str
     recommendation_id: str
-    languages: list[str] = ["Hindi"]
-    formats: list[Literal["whatsapp", "sms", "ivr", "rep_script", "visual_concept"]]
+    languages: list[Language] = ["Hindi"]
+    formats: list[ContentFormat]
     tone: str = "trusted_advisory"
 
 
 class ContentVariant(BaseModel):
     content_id: str
-    format: Literal["whatsapp", "sms", "ivr", "rep_script", "visual_concept"]
-    language: str
+    format: ContentFormat
+    language: Language
     text: str
     cta: str | None = None
     estimated_read_time_sec: int | None = Field(default=None, ge=0)
-    approval_state: Literal["pending_review", "approved", "rejected"] = "pending_review"
+    approval_state: ApprovalState = "pending_review"
     safety_flags: list[str] = []
 
 
 class ContentGenerationResponse(ApiEnvelope):
     content_batch_id: str
+    plan_id: str
+    recommendation_id: str
     variants: list[ContentVariant]
 
 
@@ -158,6 +165,17 @@ class ContentApprovalRequest(BaseModel):
     content_id: str
     approval_state: Literal["approved", "rejected"]
     reviewer: str | None = None
+
+
+class ContentApprovalResponse(ApiEnvelope):
+    content_id: str
+    content_batch_id: str
+    plan_id: str
+    recommendation_id: str
+    approval_state: ApprovalState
+    reviewer: str | None = None
+    approved_at: str | None = None
+    field_actions_unlocked: bool
 
 
 class FieldAction(BaseModel):
@@ -184,6 +202,10 @@ class AnalyticsSummaryResponse(ApiEnvelope):
     charts: dict
 
 
+class ScenarioResponse(ApiEnvelope):
+    scenarios: list["Scenario"]
+
+
 class Scenario(BaseModel):
     scenario_id: str
     name: str
@@ -193,3 +215,15 @@ class Scenario(BaseModel):
     risk_level: RiskLevel
     stock_status: StockStatus
 
+
+class ExportRequest(BaseModel):
+    plan_id: str = "PLAN_001"
+    export_type: Literal["csv", "whatsapp_pack", "rep_brief"] = "csv"
+
+
+class ExportResponse(ApiEnvelope):
+    export_id: str
+    plan_id: str
+    export_type: Literal["csv", "whatsapp_pack", "rep_brief"]
+    formats: list[str]
+    download_url: str

@@ -18,7 +18,7 @@ export function ContentPreviewCard({ variant }: { variant: ContentVariant }) {
     <article className="rounded-[22px] border border-border bg-card-soft p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-ai/10 text-ai">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-field/10 text-field">
             <Icon className="h-5 w-5" />
           </div>
           <div>
@@ -42,4 +42,3 @@ export function ContentPreviewCard({ variant }: { variant: ContentVariant }) {
     </article>
   );
 }
-

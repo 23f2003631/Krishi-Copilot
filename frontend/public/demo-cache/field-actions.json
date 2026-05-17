@@ -1,0 +1,58 @@
+{
+  "schema_version": "syngenta-copilot.v1",
+  "request_id": "REQ_004",
+  "generated_at": "2026-05-17T10:03:00+05:30",
+  "source_mode": "rules",
+  "warnings": [],
+  "plan_id": "PLAN_001",
+  "actions": [
+    {
+      "action_id": "ACT_001",
+      "rep_id": "REP_014",
+      "territory_id": "TER_001",
+      "priority": "high",
+      "due_date": "2026-02-18",
+      "action_type": "retailer_and_grower_followup",
+      "summary": "Confirm Tilt 250 EC sufficiency with top retailers, then follow up with high-receptivity wheat growers.",
+      "retailer_ids": ["RTL_0091", "RTL_0112"],
+      "recommended_script_id": "CNT_001_HI_REP",
+      "success_metric": "lead_confirmed"
+    },
+    {
+      "action_id": "ACT_002",
+      "rep_id": "REP_022",
+      "territory_id": "TER_001",
+      "priority": "medium",
+      "due_date": "2026-02-19",
+      "action_type": "non_opener_followup",
+      "summary": "Visit non-openers in priority wheat villages after WhatsApp delivery report is available.",
+      "retailer_ids": ["RTL_0104"],
+      "recommended_script_id": "CNT_001_HI_REP",
+      "success_metric": "followup_completed"
+    },
+    {
+      "action_id": "ACT_003",
+      "rep_id": "REP_031",
+      "territory_id": "TER_021",
+      "priority": "high",
+      "due_date": "2026-02-17",
+      "action_type": "stock_replenishment",
+      "summary": "Hold Sikar mustard grower outreach and replenish Score 250 EC before sell-through activation.",
+      "retailer_ids": ["RTL_0201", "RTL_0205"],
+      "recommended_script_id": "CNT_STOCK_REP",
+      "success_metric": "stock_cover_restored"
+    },
+    {
+      "action_id": "ACT_004",
+      "rep_id": "REP_044",
+      "territory_id": "TER_044",
+      "priority": "medium",
+      "due_date": "2026-02-20",
+      "action_type": "ivr_readiness_check",
+      "summary": "Validate Bengali IVR copy with local agronomist and confirm Kavach 75 WP watch-status stock.",
+      "retailer_ids": ["RTL_0440"],
+      "recommended_script_id": "CNT_POTATO_IVR",
+      "success_metric": "ivr_ready"
+    }
+  ]
+}
