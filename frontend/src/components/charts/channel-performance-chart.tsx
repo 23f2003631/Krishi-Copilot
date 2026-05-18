@@ -22,7 +22,7 @@ export function ChannelPerformanceChart({ data }: { data: { channel: string; sha
         <CartesianGrid stroke={chartTheme.grid} strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="channel" axisLine={false} tickLine={false} tick={{ fill: chartTheme.text, fontSize: 11 }} />
         <YAxis axisLine={false} tickLine={false} tick={{ fill: chartTheme.text, fontSize: 11 }} width={28} />
-        <Tooltip cursor={{ fill: "rgba(0,166,81,0.06)" }} contentStyle={{ borderRadius: 14, border: "1px solid #e8eef0" }} />
+        <Tooltip cursor={{ fill: "rgba(29,155,98,0.08)" }} contentStyle={{ borderRadius: 14, border: "1px solid #dde7e0" }} />
         <Bar dataKey="share" fill={chartTheme.field} radius={[12, 12, 12, 12]} />
       </BarChart>
     </ResponsiveContainer>

@@ -1,5 +1,5 @@
 /**
- * Workflow orchestration types — mirrors backend contracts.py workflow models.
+ * Workflow orchestration types - mirrors backend contracts.py workflow models.
  */
 
 export interface WorkflowStartRequest {

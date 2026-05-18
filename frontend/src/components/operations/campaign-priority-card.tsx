@@ -11,7 +11,7 @@ export function CampaignPriorityCard({ scenarios }: { scenarios: Scenario[] }) {
       <SectionHeader icon={Sprout} title="Campaign Window Queue" description="Ranked crop-stage windows where field action is possible now." />
       <div className="mt-4 space-y-3">
         {scenarios.map((scenario, index) => (
-          <div key={scenario.scenario_id} className="rounded-[18px] border border-border bg-white px-4 py-3">
+          <div key={scenario.scenario_id} className="enterprise-inset rounded-[18px] px-4 py-3">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">

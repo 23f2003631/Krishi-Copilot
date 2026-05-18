@@ -23,14 +23,14 @@ export function DeploymentConfidenceMeter({ confidence, urgency, blocked, classN
 
   const getCardStyle = () => {
     if (blocked) return "border-rose-200 bg-rose-50/50 shadow-[0_0_0_1px_rgba(244,63,94,0.08),0_8px_24px_rgba(244,63,94,0.06)]";
-    if (urgency === "high") return "border-emerald-200 bg-emerald-50/30 shadow-[0_0_0_1px_rgba(16,185,129,0.08),0_8px_24px_rgba(16,185,129,0.06)]";
+    if (urgency === "high") return "border-[#B7D8C3] bg-[#DDEADF]/45 shadow-[0_0_0_1px_rgba(29,155,98,0.08),0_8px_24px_rgba(29,155,98,0.06)]";
     if (urgency === "medium") return "border-amber-200 bg-amber-50/30 shadow-[0_8px_24px_rgba(245,158,11,0.05)]";
     return "border-border bg-card-soft";
   };
   
   const getUrgencyDot = () => {
     if (blocked) return "bg-rose-500";
-    if (urgency === "high") return "bg-emerald-500 animate-pulse";
+    if (urgency === "high") return "bg-[#1F9D62] animate-pulse";
     if (urgency === "medium") return "bg-amber-500";
     return "bg-gray-400";
   };

@@ -21,7 +21,7 @@ export function CampaignFunnelChart({ data }: { data: { week: string; baseline: 
         <CartesianGrid stroke={chartTheme.grid} strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: chartTheme.text, fontSize: 11 }} />
         <YAxis axisLine={false} tickLine={false} tick={{ fill: chartTheme.text, fontSize: 11 }} width={28} />
-        <Tooltip cursor={{ fill: "rgba(49,72,58,0.06)" }} contentStyle={{ borderRadius: 14, border: "1px solid #e8eef0" }} />
+        <Tooltip cursor={{ fill: "rgba(29,155,98,0.08)" }} contentStyle={{ borderRadius: 14, border: "1px solid #dde7e0" }} />
         <Bar dataKey="baseline" fill={chartTheme.aiSoft} radius={[12, 12, 12, 12]} />
         <Bar dataKey="recommended" fill={chartTheme.ai} radius={[12, 12, 12, 12]} />
       </BarChart>

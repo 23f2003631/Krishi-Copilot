@@ -89,7 +89,7 @@ export function PlannerForm({ scenarios }: { scenarios: Scenario[] }) {
         </div>
         <div className="mt-3 grid grid-cols-4 gap-2">
           {["Crop stage", "Stock", "Weather", "Language"].map((gate) => (
-            <div key={gate} className="rounded-[12px] border border-field/20 bg-field/10 px-2 py-2 text-center text-[11px] font-semibold text-lime">
+            <div key={gate} className="rounded-[12px] border border-field/20 bg-field/10 px-2 py-2 text-center text-[11px] font-semibold text-primary">
               {gate}
             </div>
           ))}

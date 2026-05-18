@@ -17,7 +17,7 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
 
   const getCardBorder = () => {
     if (recommendation.blocked) return "border-rose-200 bg-rose-50/30";
-    if (recommendation.timing.urgency === "high") return "border-emerald-200/60 bg-card-soft";
+    if (recommendation.timing.urgency === "high") return "border-[#B7D8C3]/70 bg-[#DDEADF]/40";
     return "border-border bg-card-soft";
   };
 
@@ -37,7 +37,7 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
           </div>
           <h3 className="mt-3 text-base font-semibold text-foreground">{recommendation.segment_label}</h3>
           <p className="mt-1 text-sm leading-6 text-muted">
-            {recommendation.product} · {recommendation.target_count.toLocaleString()} growers · expected leads {recommendation.expected_impact.expected_leads}
+            {recommendation.product} / {recommendation.target_count.toLocaleString()} growers / expected leads {recommendation.expected_impact.expected_leads}
           </p>
         </div>
         <Button variant={recommendation.blocked ? "secondary" : "default"} size="sm">
@@ -82,7 +82,7 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
       <div className="mt-4 flex flex-wrap gap-2">
         {recommendation.channel_strategy.map((channel) => (
           <Badge key={channel.channel} variant="outline">
-            {channel.rank}. {channel.channel.replace("_", " ")} · {channel.reason}
+            {channel.rank}. {channel.channel.replace("_", " ")} / {channel.reason}
           </Badge>
         ))}
       </div>

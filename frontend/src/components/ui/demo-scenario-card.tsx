@@ -31,7 +31,7 @@ export function DemoScenarioCard({ className }: { className?: string }) {
       steps: [
         "Review assigned actions in your work queue",
         "Check updated talking points in Advisory Studio",
-        "Execute visits — mark each as complete",
+        "Execute visits: mark each as complete",
         "Log grower feedback and confirm leads",
       ]
     },
