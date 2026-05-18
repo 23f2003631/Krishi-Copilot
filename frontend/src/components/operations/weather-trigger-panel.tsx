@@ -22,7 +22,7 @@ export function WeatherTriggerPanel({ insight }: { insight: WeatherInsight }) {
         <Trigger icon={CloudRain} label="Rainfall" value="Light" />
         <Trigger icon={ThermometerSun} label="Canopy stress" value="Watch" />
       </div>
-      <div className="mt-4 flex items-center gap-3 rounded-[18px] border border-border bg-white px-4 py-3">
+      <div className="enterprise-inset mt-4 flex items-center gap-3 rounded-[18px] px-4 py-3">
         <Waves className="h-5 w-5 text-cyan" />
         <div>
           <p className="text-xs font-semibold text-foreground">Crop-stage activation rule</p>
@@ -35,7 +35,7 @@ export function WeatherTriggerPanel({ insight }: { insight: WeatherInsight }) {
 
 function Trigger({ icon: Icon, label, value }: { icon: typeof CloudRain; label: string; value: string }) {
   return (
-    <div className="rounded-[16px] border border-border bg-white px-3 py-2 text-center">
+    <div className="enterprise-inset rounded-[16px] px-3 py-2 text-center">
       <Icon className="mx-auto h-3.5 w-3.5 text-warning" />
       <p className="mt-1 text-[11px] text-muted">{label}</p>
       <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>

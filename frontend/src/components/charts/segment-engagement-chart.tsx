@@ -34,7 +34,7 @@ export function SegmentEngagementChart() {
         <CartesianGrid stroke={chartTheme.grid} strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: chartTheme.text, fontSize: 11 }} />
         <YAxis axisLine={false} tickLine={false} tick={{ fill: chartTheme.text, fontSize: 11 }} width={28} />
-        <Tooltip contentStyle={{ borderRadius: 14, border: "1px solid #e8eef0" }} />
+        <Tooltip contentStyle={{ borderRadius: 14, border: "1px solid #dde7e0" }} />
         <Area dataKey="baseline" stroke={chartTheme.aiSoft} fill="transparent" strokeWidth={2} />
         <Area dataKey="recommended" stroke={chartTheme.ai} fill="url(#recommendedGradient)" strokeWidth={2} />
       </AreaChart>

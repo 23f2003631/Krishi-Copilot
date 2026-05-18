@@ -8,8 +8,8 @@ export function RepExecutionTable({ actions }: { actions: FieldAction[] }) {
   return (
     <DashboardCard>
       <SectionHeader icon={ClipboardList} title="Territory Field Execution" description="Rep ownership, village cluster, weather dependency, and stock gate for the deployment window." />
-      <div className="mt-4 overflow-hidden rounded-[18px] border border-border bg-white">
-        <div className="grid grid-cols-[0.8fr_0.9fr_1.55fr_1fr_0.75fr] bg-card-soft px-4 py-3 text-[11px] font-semibold uppercase text-muted">
+      <div className="enterprise-inset mt-4 overflow-hidden rounded-[18px]">
+        <div className="grid grid-cols-[0.8fr_0.9fr_1.55fr_1fr_0.75fr] bg-[#EEF3EF]/80 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
           <span>Field owner</span>
           <span>Territory gate</span>
           <span>Deployment action</span>

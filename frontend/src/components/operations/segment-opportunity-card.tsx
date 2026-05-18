@@ -15,7 +15,7 @@ export function SegmentOpportunityCard() {
       <SectionHeader icon={UsersRound} title="Grower Cohort Opportunity" description="Audience cohorts translated into channel and field decisions." />
       <div className="mt-4 space-y-3">
         {segments.map((segment) => (
-          <div key={segment.label} className="rounded-[18px] border border-border bg-white px-4 py-3">
+          <div key={segment.label} className="enterprise-inset rounded-[18px] px-4 py-3">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-foreground">{segment.label}</p>
               <Badge variant={segment.tone}>{segment.lift}</Badge>
