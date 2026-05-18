@@ -229,3 +229,96 @@ class ExportResponse(ApiEnvelope):
     export_type: Literal["csv", "whatsapp_pack", "rep_brief"]
     formats: list[str]
     download_url: str
+
+
+# ---------------------------------------------------------------------------
+# Workflow Orchestration Contracts
+# ---------------------------------------------------------------------------
+
+class WorkflowStartRequest(BaseModel):
+    """Request to bootstrap a full workflow chain."""
+    scenario_id: str | None = None
+    crop: Crop = "wheat"
+    product: str = "Tilt 250 EC"
+    objective: Objective = "lead_generation"
+    week_start_date: str = "2026-02-16"
+    geography: Geography = Geography(state="Uttar Pradesh", district="Kanpur Nagar")
+    audience: Audience = Audience(languages=["Hindi"], device_types=["smartphone"])
+    channel_preferences: list[Channel] = ["whatsapp", "sms", "field_rep"]
+    constraints: Constraints = Constraints()
+    role: Role = "campaign_manager"
+
+
+class WorkflowEvent(BaseModel):
+    """A single workflow lifecycle event."""
+    event_id: str
+    workflow_id: str
+    event_type: str
+    role: str | None = None
+    timestamp: str
+    severity: RiskLevel = "low"
+    description: str
+    territory: str | None = None
+    metadata: dict = {}
+
+
+class NextBestAction(BaseModel):
+    """Recommended next action based on workflow state."""
+    action: str
+    reason: str
+    assigned_role: str
+    priority: RiskLevel
+    target_entity_id: str | None = None
+
+
+class KpiItem(BaseModel):
+    """A single KPI metric."""
+    label: str
+    value: str
+    trend: str
+    metadata: str | None = None
+    tone: str = "ai"
+    source: str = "computed"
+
+
+class KpiData(BaseModel):
+    """Role-aware KPI collection."""
+    role: str
+    kpis: list[KpiItem]
+
+
+class OperationalEvent(BaseModel):
+    """An operational intelligence event for the live feed."""
+    event_id: str
+    text: str
+    time: str
+    event_type: str = "info"
+    role: str | None = None
+    severity: RiskLevel = "low"
+
+
+class SystemHealth(BaseModel):
+    """Backend system health snapshot."""
+    gemini: str = "unknown"
+    supabase: str = "unknown"
+    cache: str = "unknown"
+    data_mode: str = "unknown"
+    active_workflows: int = 0
+    last_generation_source: str = "unknown"
+
+
+class WorkflowState(ApiEnvelope):
+    """Complete workflow state returned by the orchestrator."""
+    workflow_id: str
+    plan_id: str
+    context_id: str
+    status: str = "active"
+    context: CampaignContextResponse | None = None
+    recommendations: list[Recommendation] = []
+    content_variants: list[ContentVariant] = []
+    events: list[WorkflowEvent] = []
+    kpis: KpiData | None = None
+    alerts: list[OperationalEvent] = []
+    next_action: NextBestAction | None = None
+    system_health: SystemHealth | None = None
+

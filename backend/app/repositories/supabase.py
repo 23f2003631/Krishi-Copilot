@@ -51,6 +51,14 @@ class SupabaseCampaignRepository:
         }
         return self._try(lambda: self._upsert("campaign_contexts", row, "context_id") and payload, payload)
 
+    def _ensure_context_exists(self, context_id: str) -> bool:
+        rows = self._select("campaign_contexts", {"context_id": context_id})
+        return bool(rows)
+
+    def _ensure_recommendation_exists(self, recommendation_id: str) -> bool:
+        rows = self._select("recommendations", {"recommendation_id": recommendation_id})
+        return bool(rows)
+
     def create_recommendations(self, context_id: str) -> dict:
         fallback = self.fallback.create_recommendations(context_id)
 
@@ -58,6 +66,12 @@ class SupabaseCampaignRepository:
             rows = self._select("recommendations", {"context_id": context_id}, order="priority_score.desc")
             if rows:
                 return self._recommendation_response(context_id, rows)
+                
+            if not self._ensure_context_exists(context_id):
+                import logging
+                logging.getLogger(__name__).warning("Supabase context %s missing; bypassing recommendation insert to prevent FK error.", context_id)
+                return fallback
+
             for recommendation in fallback["recommendations"]:
                 self._upsert(
                     "recommendations",
@@ -111,6 +125,12 @@ class SupabaseCampaignRepository:
 
     def save_content(self, response: dict) -> dict:
         def action() -> dict:
+            rec_id = response.get("recommendation_id")
+            if rec_id and not self._ensure_recommendation_exists(rec_id):
+                import logging
+                logging.getLogger(__name__).warning("Supabase recommendation %s missing; bypassing content insert to prevent FK error.", rec_id)
+                return response
+                
             for variant in response["variants"]:
                 flags = variant.get("safety_flags", [])
                 src = variant.get("generation_source")
