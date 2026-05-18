@@ -5,11 +5,16 @@ export const metadata: Metadata = {
   title: "Syngenta Krishi Campaign Copilot",
   description: "AI operations control room for crop-stage-aware campaign orchestration."
 };
+import { RoleProvider } from "@/lib/contexts/RoleContext";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <RoleProvider>
+          {children}
+        </RoleProvider>
+      </body>
     </html>
   );
 }

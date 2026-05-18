@@ -1,7 +1,13 @@
-import { Bell, Search, Settings2 } from "lucide-react";
+"use client";
+
+import { Bell, Search, Settings2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRole } from "@/lib/contexts/RoleContext";
+import { AVAILABLE_ROLES, RoleType } from "@/lib/config/roles";
 
 export function DashboardHeader() {
+  const { role, setRole } = useRole();
+
   return (
     <header className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
       <div className="flex items-center gap-4">
@@ -15,7 +21,27 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <label className="flex h-11 min-w-0 items-center gap-3 rounded-full border border-border bg-white px-4 shadow-[0_8px_24px_rgba(31,56,88,0.05)] sm:w-[340px]">
+        {/* Role Selector */}
+        <div className="relative flex items-center h-11 rounded-full border border-border bg-white px-3 shadow-[0_8px_24px_rgba(31,56,88,0.05)]">
+          <Users className="h-4 w-4 shrink-0 text-field mr-2" />
+          <select 
+            className="appearance-none bg-transparent text-sm font-medium text-foreground outline-none cursor-pointer pr-4"
+            value={role}
+            onChange={(e) => setRole(e.target.value as RoleType)}
+          >
+            {AVAILABLE_ROLES.map((r) => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
+          {/* Custom chevron */}
+          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L5 5L9 1" stroke="#5F738C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <label className="flex h-11 min-w-0 items-center gap-3 rounded-full border border-border bg-white px-4 shadow-[0_8px_24px_rgba(31,56,88,0.05)] sm:w-[280px]">
           <Search className="h-4 w-4 shrink-0 text-muted" />
           <input
             className="min-w-0 flex-1 border-0 bg-transparent text-sm text-foreground outline-none placeholder:text-[#b6c0c7]"
