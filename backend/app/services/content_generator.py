@@ -262,19 +262,40 @@ class ContentGenerationService:
         return self._provider
 
     def _build_prompt(self, request: ContentGenerationRequest) -> str:
-        """Build user prompt from request context."""
-        # Use demo context for the prompt enrichment
-        repo = get_repository()
+        """Build user prompt from request context.
+
+        Uses context_builder maps directly instead of calling the repository,
+        which previously caused FK violations for non-seeded IDs.
+        """
         from app.services.context_builder import CROP_STAGE_MAP, INVENTORY_MAP, WEATHER_RISK_MAP
 
-        rec_response = repo.create_recommendations(request.plan_id.replace("PLAN_", "CTX_") if request.plan_id.startswith("PLAN_") else "CTX_001")
+        # Try to find the recommendation in the in-memory workflow store first
         rec = None
-        for r in rec_response.get("recommendations", []):
-            if r.get("recommendation_id") == request.recommendation_id:
-                rec = r
-                break
+        try:
+            from app.services.workflow import get_workflow_state
+            wf_state = get_workflow_state(request.plan_id)
+            if wf_state:
+                for r in wf_state.get("recommendations", []):
+                    if r.get("recommendation_id") == request.recommendation_id:
+                        rec = r
+                        break
+        except ImportError:
+            pass
+
+        # Fallback: use the demo repository (never Supabase) for prompt context only
         if not rec:
-            rec = rec_response.get("recommendations", [{}])[0] if rec_response.get("recommendations") else {}
+            try:
+                from app.repositories.demo import DemoRepository
+                demo = DemoRepository()
+                demo_response = demo.create_recommendations("CTX_001")
+                for r in demo_response.get("recommendations", []):
+                    if r.get("recommendation_id") == request.recommendation_id:
+                        rec = r
+                        break
+                if not rec:
+                    rec = demo_response.get("recommendations", [{}])[0] if demo_response.get("recommendations") else {}
+            except Exception:
+                rec = {}
 
         crop = rec.get("crop", "wheat")
         product = rec.get("product", "Tilt 250 EC")

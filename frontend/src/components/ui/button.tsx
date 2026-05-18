@@ -8,9 +8,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-olive text-white shadow-[0_12px_28px_rgba(49,72,58,0.2)] hover:bg-[#263a2e]",
+        default: "bg-deep-emerald text-soft-white shadow-level-2 hover:bg-[#043326]",
         secondary: "border border-border bg-card text-foreground hover:bg-card-soft",
-        ghost: "text-muted hover:bg-card-soft hover:text-foreground",
+        ghost: "text-muted-text hover:bg-card-soft hover:text-foreground",
         danger: "bg-danger text-white hover:bg-danger/90"
       },
       size: {

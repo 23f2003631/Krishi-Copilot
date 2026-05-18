@@ -11,8 +11,8 @@ export function DashboardHeader() {
   return (
     <header className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
       <div className="flex items-center gap-4">
-        <div className="h-12 w-12 overflow-hidden rounded-full border border-white bg-gradient-to-br from-[#d8f4e4] to-[#dce7ff] shadow-[0_10px_24px_rgba(31,56,88,0.08)]">
-          <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-field">SK</div>
+        <div className="h-12 w-12 overflow-hidden rounded-full border border-white bg-gradient-to-br from-primary/30 to-secondary-emerald/20 shadow-level-1">
+          <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-deep-emerald">SK</div>
         </div>
         <div>
           <h1 className="text-[22px] font-semibold leading-7 text-foreground">Krishi Ops Desk</h1>
@@ -22,8 +22,8 @@ export function DashboardHeader() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         {/* Role Selector */}
-        <div className="relative flex items-center h-11 rounded-full border border-border bg-white px-3 shadow-[0_8px_24px_rgba(31,56,88,0.05)]">
-          <Users className="h-4 w-4 shrink-0 text-field mr-2" />
+        <div className="relative flex items-center h-11 rounded-full border border-border bg-white px-3 shadow-level-1 hover:shadow-level-2 transition-shadow">
+          <Users className="h-4 w-4 shrink-0 text-deep-emerald mr-2" />
           <select 
             className="appearance-none bg-transparent text-sm font-medium text-foreground outline-none cursor-pointer pr-4"
             value={role}
@@ -41,7 +41,7 @@ export function DashboardHeader() {
           </div>
         </div>
 
-        <label className="flex h-11 min-w-0 items-center gap-3 rounded-full border border-border bg-white px-4 shadow-[0_8px_24px_rgba(31,56,88,0.05)] sm:w-[280px]">
+        <label className="flex h-11 min-w-0 items-center gap-3 rounded-full border border-border bg-white px-4 shadow-level-1 hover:shadow-level-2 transition-shadow sm:w-[280px]">
           <Search className="h-4 w-4 shrink-0 text-muted" />
           <input
             className="min-w-0 flex-1 border-0 bg-transparent text-sm text-foreground outline-none placeholder:text-[#b6c0c7]"

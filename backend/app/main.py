@@ -6,10 +6,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(level
 
 from app.config import settings
 from app.routers import analytics, content, context, export, field_actions, recommendations, scenarios
+from app.routers import workflow as workflow_router
 
 app = FastAPI(
     title="Syngenta Krishi Campaign Copilot API",
-    version="0.1.0",
+    version="0.2.0",
     description="Intelligence-layer API for crop-stage-aware campaign orchestration.",
 )
 
@@ -28,6 +29,7 @@ app.include_router(content.router, prefix="/api/v1/content", tags=["content"])
 app.include_router(field_actions.router, prefix="/api/v1", tags=["field-actions"])
 app.include_router(analytics.router, prefix="/api/v1", tags=["analytics"])
 app.include_router(export.router, prefix="/api/v1", tags=["export"])
+app.include_router(workflow_router.router, prefix="/api/v1", tags=["workflow"])
 
 
 @app.get("/health")

@@ -5,12 +5,20 @@ import { AIReasoningChips } from "@/components/insights/ai-reasoning-chips";
 import { RiskIntensityBadge } from "@/components/cards/risk-intensity-badge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DeploymentConfidenceMeter } from "@/components/ui/deployment-confidence-meter";
+import { cn } from "@/lib/utils";
 
 export function AIRecommendationCard({ recommendation }: { recommendation: Recommendation }) {
   const confidence = Math.round(recommendation.receptivity.confidence * 100);
+  
+  const getCardAccent = () => {
+    if (recommendation.blocked) return "border-rose-200/80 shadow-[0_0_0_1px_rgba(244,63,94,0.06),0_10px_32px_rgba(244,63,94,0.08)]";
+    if (recommendation.timing.urgency === "high") return "border-emerald-200/60 shadow-[0_0_0_1px_rgba(16,185,129,0.06),0_10px_32px_rgba(16,185,129,0.08)]";
+    return "border-border shadow-[0_10px_32px_rgba(31,56,88,0.06)]";
+  };
 
   return (
-    <article className="rounded-[22px] border border-border bg-white p-4 shadow-[0_10px_32px_rgba(31,56,88,0.06)]">
+    <article className={cn("rounded-[22px] border bg-white p-4 transition-all duration-300", getCardAccent())}>
       <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -35,6 +43,14 @@ export function AIRecommendationCard({ recommendation }: { recommendation: Recom
             </Link>
           </Button>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <DeploymentConfidenceMeter 
+          confidence={recommendation.receptivity.confidence} 
+          urgency={recommendation.timing.urgency} 
+          blocked={recommendation.blocked} 
+        />
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -63,4 +79,5 @@ function Signal({ icon: Icon, label, value }: { icon: typeof BrainCircuit; label
     </div>
   );
 }
+
 
