@@ -7,8 +7,11 @@ import { formatPercent } from "@/lib/formatters";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RiskBadge } from "@/components/cards/risk-badge";
+import { useRole } from "@/lib/contexts/RoleContext";
+import { ExplainabilityBadge } from "@/components/ui/explainability-badge";
 
 export function RecommendationCard({ recommendation }: { recommendation: Recommendation }) {
+  const { roleConfig } = useRole();
   return (
     <motion.article
       initial={{ opacity: 0, y: 8 }}
@@ -57,9 +60,11 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
             {recommendation.reason_codes.map((reason) => (
-              <Badge key={reason} variant="soft">
-                {reason}
-              </Badge>
+              <ExplainabilityBadge 
+                key={reason} 
+                type={roleConfig.explainabilityFocus} 
+                value={reason} 
+              />
             ))}
           </div>
         </div>
