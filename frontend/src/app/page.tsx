@@ -7,6 +7,59 @@ import { PlannerClient } from "@/components/dashboard/planner-client";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { Sidebar } from "@/components/layout/sidebar";
 
+// Mock data strictly for visual purposes on the landing page
+const MOCK_DASHBOARD_DATA = {
+  workflowState: {
+    workflow_id: "", // Empty to disable API polling
+    alerts: [],
+    events: [],
+    next_action: {
+      action: "Review Agronomic Intelligence",
+      reason: "High predictive accuracy for current crop stage",
+      assigned_role: "Campaign Manager",
+      priority: "high"
+    }
+  },
+  context: {
+    context_id: "CTX_MOCK",
+    crop_stage: { stage: "flowering", days_to_stage: 3, confidence: 0.82 },
+    grower_summary: { estimated_growers: 1180, smartphone_share: 0.74, keypad_share: 0.18, primary_language: "Hindi" },
+    weather_insights: [{ risk_type: "humidity_rainfall", risk_level: "high", summary: "Humidity and light rainfall raise crop-stage disease advisory priority.", confidence: 0.76 }],
+    inventory_alerts: [{ product: "Tilt 250 EC", stock_status: "healthy", stock_cover_days: 18, affected_retailers: 6 }],
+  },
+  recommendations: {
+    recommendations: [
+      {
+        id: "rec_1",
+        channel: "WhatsApp",
+        message_variant: "Visual + Audio Hindi",
+        content_summary: "Visual guide showing early symptoms and prevention strategy.",
+        confidence: 0.92,
+        expected_conversion: 0.18,
+        reasoning: "Visual guides over WhatsApp perform 40% better for pest alerts in UP."
+      }
+    ]
+  },
+  fieldActions: {
+    actions: [
+      { action_id: "ACT_001", rep_id: "R-102", territory_id: "T-KAN", action_type: "retailer_visit", summary: "Check stock", due_date: "2026-02-18", priority: "high" }
+    ]
+  },
+  analytics: {
+    charts: {
+      weekly_funnel: [
+        { label: "Target", value: 100 },
+        { label: "Reached", value: 85 },
+        { label: "Engaged", value: 45 },
+        { label: "Converted", value: 12 }
+      ]
+    }
+  },
+  scenarios: [
+    { title: "Standard Advisory", description: "Deploy localized WhatsApp messages", reach: "1,180", conversion: "12%", lift: "8%", cost: "Low" }
+  ]
+};
+
 export default function LandingPage() {
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 100], [0, 1]);
@@ -120,7 +173,7 @@ export default function LandingPage() {
                 <div className="p-6 bg-shell flex flex-col overflow-hidden">
                   <DashboardHeader />
                   <div className="mt-6 flex-1 overflow-hidden opacity-90 scale-[0.98] origin-top">
-                    <PlannerClient />
+                    <PlannerClient {...MOCK_DASHBOARD_DATA} />
                   </div>
                 </div>
               </div>
