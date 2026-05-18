@@ -31,12 +31,31 @@ const MOCK_DASHBOARD_DATA = {
     recommendations: [
       {
         id: "rec_1",
-        channel: "WhatsApp",
-        message_variant: "Visual + Audio Hindi",
-        content_summary: "Visual guide showing early symptoms and prevention strategy.",
-        confidence: 0.92,
-        expected_conversion: 0.18,
-        reasoning: "Visual guides over WhatsApp perform 40% better for pest alerts in UP."
+        segment_label: "Wheat Growers - Kanpur Nagar",
+        product: "Tilt 250 EC",
+        target_count: 1180,
+        blocked: false,
+        priority_score: 92,
+        timing: {
+          urgency: "high",
+          send_window: "Feb 16 - Feb 18"
+        },
+        receptivity: {
+          confidence: 0.92,
+          preferred_channel: "WhatsApp",
+          best_time: "Morning"
+        },
+        expected_impact: {
+          expected_click_rate: 0.18,
+          expected_conversion_rate: 0.08
+        },
+        reason_codes: ["crop_stage_match", "weather_risk", "stock_available"],
+        content: {
+          channel: "WhatsApp",
+          message_variant: "Visual + Audio Hindi",
+          content_summary: "Visual guide showing early symptoms and prevention strategy.",
+          reasoning: "Visual guides over WhatsApp perform 40% better for pest alerts in UP."
+        }
       }
     ]
   },
@@ -56,7 +75,22 @@ const MOCK_DASHBOARD_DATA = {
     }
   },
   scenarios: [
-    { title: "Standard Advisory", description: "Deploy localized WhatsApp messages", reach: "1,180", conversion: "12%", lift: "8%", cost: "Low" }
+    { 
+      scenario_id: "SCEN_001",
+      name: "Wheat Flowering Protection",
+      description: "Immediate disease advisory due to high humidity and favorable crop stage.",
+      risk_level: "high",
+      stock_status: "healthy",
+      geography: { district: "Kanpur Nagar", state: "UP" }
+    },
+    { 
+      scenario_id: "SCEN_002",
+      name: "Cotton Bollworm Pre-alert",
+      description: "Preventative advisory in high-pest density blocks. Stock requires repositioning.",
+      risk_level: "medium",
+      stock_status: "low",
+      geography: { district: "Bhatinda", state: "Punjab" }
+    }
   ]
 };
 
