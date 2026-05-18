@@ -1,10 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { Leaf, Radar } from "lucide-react";
 import { navigationItems, quickActions } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { useRole } from "@/lib/contexts/RoleContext";
 
 export function Sidebar({ activePath }: { activePath: string }) {
+  const { role, roleConfig } = useRole();
+  const visibleNavItems = navigationItems.filter(item => item.roles.includes(role));
+
   return (
     <aside className="hidden border-r border-border/70 bg-[#f3f7f4] p-6 lg:block">
       <div className="flex items-center gap-3">
@@ -13,13 +19,13 @@ export function Sidebar({ activePath }: { activePath: string }) {
         </div>
         <div>
           <p className="text-base font-semibold text-foreground">Krishi Copilot</p>
-          <p className="text-[11px] text-muted">AI Operations</p>
+          <p className="text-[11px] text-muted line-clamp-1">{roleConfig.label}</p>
         </div>
       </div>
 
       <p className="mt-8 text-sm font-medium text-muted">Command Center</p>
       <nav className="mt-4 space-y-2">
-        {navigationItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = activePath === item.href;
           const isHash = item.href.startsWith("#");
