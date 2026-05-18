@@ -15,17 +15,17 @@ export function ConfidenceBar({ value, label, size = "md", showValue = true, cla
   
   const barHeight = size === "sm" ? "h-1.5" : "h-2.5";
   
-  // Dynamic gradient: low=amber, mid=blue, high=emerald
+  // Dynamic gradient: low=amber, mid=teal, high=operational green
   const getGradient = () => {
-    if (pct >= 80) return "from-emerald-400 to-emerald-500";
-    if (pct >= 60) return "from-blue-400 to-blue-500";
+    if (pct >= 80) return "from-[#B7D8C3] to-[#1F9D62]";
+    if (pct >= 60) return "from-[#B7D8C3] to-[#0E7490]";
     if (pct >= 40) return "from-amber-400 to-amber-500";
     return "from-rose-400 to-rose-500";
   };
   
   const getTextColor = () => {
-    if (pct >= 80) return "text-emerald-700";
-    if (pct >= 60) return "text-blue-700";
+    if (pct >= 80) return "text-[#0D7A43]";
+    if (pct >= 60) return "text-[#0E7490]";
     if (pct >= 40) return "text-amber-700";
     return "text-rose-700";
   };
