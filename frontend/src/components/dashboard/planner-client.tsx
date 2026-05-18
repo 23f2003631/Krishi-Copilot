@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { BrainCircuit, CloudRain, Languages, Leaf, MapPin, PackageCheck, ShieldCheck, Smartphone, Target, AlertTriangle, Store, ClipboardList, UsersRound } from "lucide-react";
+import { BrainCircuit, CloudRain, Languages, Leaf, MapPin, PackageCheck, ShieldCheck, Smartphone, Target, AlertTriangle, Store, ClipboardList, UsersRound, Megaphone } from "lucide-react";
 import { AiInsightBanner } from "@/components/insights/ai-insight-banner";
 import { AIRecommendationCard } from "@/components/insights/ai-recommendation-card";
 import { KpiStatCard } from "@/components/cards/kpi-stat-card";
@@ -120,98 +120,122 @@ export function PlannerClient({ scenarios, context, recommendations, fieldAction
           transition: { staggerChildren: 0.1 }
         }
       }}
-      className="space-y-4"
+      className="mx-auto w-full max-w-[1500px] space-y-6"
     >
-      <OperationalAlertBanner
-        alerts={workflowState?.alerts}
-      />
+      {/* Level 1: System Reality & Live Intelligence */}
+      <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-2">
+        <SystemHealthStrip />
+        <LiveIntelligenceStrip events={liveEvents} />
+      </motion.div>
 
-      {role === "Campaign Manager" && (
+      {/* Level 2: Escalations & Priorities */}
+      <OperationalAlertBanner alerts={workflowState?.alerts} />
+
+      {/* Level 3: AI Directive (What should happen next?) */}
+      {role === "Campaign Manager" ? (
         <AiInsightBanner
           title="Crop-stage activation window detected"
           description="Flowering-stage wheat, disease-weather pressure, Hindi grower reach, and 18-day retailer stock cover align for a launch-ready advisory deployment."
           actionLabel="Review field signal"
         />
-      )}
-
-      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {renderKpis()}
-      </motion.div>
-
-      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 xl:grid-cols-12">
-        {(role === "Campaign Manager" || role === "Territory Manager") && (
-          <DashboardCard className="xl:col-span-4">
-            <SectionHeader
-              icon={MapPin}
-              title="Territory Activation Context"
-              description="The field brief used by the crop-stage recommendation engine."
-            />
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <PlannerField label="Crop" value="Wheat" />
-              <PlannerField label="Product" value="Tilt 250 EC" />
-              <PlannerField label="Region" value="Kanpur Nagar, UP" />
-              <PlannerField label="Week" value="Feb 16, 2026" />
-              <PlannerField label="Objective" value="Grower inquiry" />
-              <PlannerField label="Audience" value="1,180 growers" />
+      ) : workflowState?.next_action && (
+        <div className="rounded-[16px] border border-primary/20 bg-primary/5 px-5 py-4 flex items-center justify-between shadow-glow-subtle">
+          <div className="flex items-center gap-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary">
+              <BrainCircuit className="h-5 w-5" />
             </div>
-            <div className="mt-4 rounded-[18px] border border-border bg-white p-4">
-              <div className="flex items-center justify-between text-xs font-medium text-muted">
-                <span>Deployment gates passed</span>
-                <span>4 / 4</span>
-              </div>
-              <div className="mt-3 grid grid-cols-4 gap-2">
-                {["Crop stage", "Stock", "Weather", "Language"].map((gate) => (
-                  <div key={gate} className="rounded-[12px] border border-field/20 bg-field/10 px-2 py-2 text-center text-[11px] font-semibold text-[#237143]">
-                    {gate}
-                  </div>
-                ))}
-              </div>
+            <div>
+              <p className="text-[15px] font-semibold text-foreground tracking-tight">{workflowState.next_action.action}</p>
+              <p className="text-[13px] text-muted-text mt-0.5">{workflowState.next_action.reason} / Assigned to: {workflowState.next_action.assigned_role}</p>
             </div>
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <Button asChild>
-                <Link href={`/recommendations?context_id=${context.context_id || "CTX_001"}${workflowId ? `&workflow=${workflowId}` : ""}`}>{roleConfig.primaryAction}</Link>
-              </Button>
-            </div>
-          </DashboardCard>
-        )}
-
-        <div className={role === "Campaign Manager" || role === "Territory Manager" ? "xl:col-span-5" : "xl:col-span-8"}>
-          <DashboardCard className="h-full">
-            <SectionHeader icon={BrainCircuit} title="Agronomic Recommendation Feed" description="Explainable next-best action for the selected crop-stage window." />
-            <div className="mt-4">
-              <AIRecommendationCard recommendation={topRecommendation} />
-            </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <SignalTile icon={Smartphone} label="WhatsApp reach" value={`${Math.round(context.grower_summary.smartphone_share * 100)}%`} />
-              <SignalTile icon={Languages} label="Primary language" value={context.grower_summary.primary_language} />
-              <SignalTile icon={ShieldCheck} label="Agronomy review" value="Required" />
-            </div>
-          </DashboardCard>
-        </div>
-
-        <div className="grid gap-4 xl:col-span-3">
-          <RetailerReadinessCard alerts={context.inventory_alerts} />
-          <WeatherTriggerPanel insight={context.weather_insights[0]} />
-        </div>
-      </motion.div>
-
-      {/* Next-best-action banner */}
-      {workflowState?.next_action && (
-        <div className="rounded-2xl border border-brand/20 bg-brand/5 px-5 py-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold text-brand">{workflowState.next_action.action}</p>
-            <p className="text-xs text-muted mt-0.5">{workflowState.next_action.reason} · {workflowState.next_action.assigned_role}</p>
           </div>
-          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-            workflowState.next_action.priority === "high" ? "bg-amber-100 text-amber-800" :
-            workflowState.next_action.priority === "medium" ? "bg-blue-100 text-blue-800" :
-            "bg-zinc-100 text-zinc-600"
+          <span className={`text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full ${
+            workflowState.next_action.priority === "high" ? "bg-warning/15 text-warning border border-warning/20" :
+            workflowState.next_action.priority === "medium" ? "bg-cyan/15 text-cyan border border-cyan/20" :
+            "bg-muted/10 text-muted-text border border-border"
           }`}>
-            {workflowState.next_action.priority} priority
+            {workflowState.next_action.priority} Priority
           </span>
         </div>
       )}
 
+      {/* Level 4: Current Status (KPIs) */}
+      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 pt-1 md:grid-cols-2 xl:grid-cols-5 [&>section:first-child]:xl:col-span-2">
+        {renderKpis()}
+      </motion.div>
+
+      {/* Level 5: Deep Context & Orchestration */}
+      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid items-stretch gap-6 xl:grid-cols-[0.95fr_1.15fr_0.9fr]">
+        
+        {/* Territory Context */}
+        <DashboardCard className="flex h-full flex-col p-0">
+          <div className="p-5 flex justify-between items-center border-b border-[#0B5B34]/[0.08]">
+            <h3 className="text-[16px] font-semibold text-[#07110B]">Territory Context</h3>
+            <button className="text-gray-400 hover:text-gray-600">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+            </button>
+          </div>
+          <div className="p-5 grid grid-cols-2 gap-4">
+            <PlannerField label="CROP" value="Corn" />
+            <PlannerField label="PRODUCT" value="Fortenza" />
+            <PlannerField label="REGION" value="Karnataka" />
+            <PlannerField label="WEEK" value="W24" />
+            <PlannerField label="OBJECTIVE" value="Yield" />
+            <PlannerField label="AUDIENCE" value="Enterprise" />
+          </div>
+          <div className="px-5 pb-5 mt-2 flex flex-wrap gap-2">
+            <span className="inline-flex items-center rounded-full border border-[#0D7A43]/20 bg-[#DDEADF] px-3 py-1 text-[11px] font-semibold text-[#0D7A43]">Supply Ready</span>
+            <span className="inline-flex items-center rounded-full border border-[#0D7A43]/20 bg-[#DDEADF] px-3 py-1 text-[11px] font-semibold text-[#0D7A43]">Retailer Signed</span>
+            <span className="inline-flex items-center rounded-full border border-[#0D7A43]/20 bg-[#DDEADF] px-3 py-1 text-[11px] font-semibold text-[#0D7A43]">Staff Trained</span>
+            <span className="inline-flex items-center rounded-full border border-[#0D7A43]/20 bg-[#DDEADF] px-3 py-1 text-[11px] font-semibold text-[#0D7A43]">Digital Live</span>
+          </div>
+          <div className="p-5 mt-auto border-t border-[#0B5B34]/[0.08]">
+             <Button className="w-full bg-[#0D7A43] hover:bg-[#0A6235] text-white font-semibold">Review Recommendations</Button>
+          </div>
+        </DashboardCard>
+
+        {/* AI Recommendation Feed */}
+        <div className="h-full">
+          <AIRecommendationCard />
+        </div>
+
+        {/* Readiness & Triggers */}
+        <div className="flex flex-col gap-6 h-full">
+          <DashboardCard className="p-5 flex-1">
+             <div className="flex items-center gap-2 mb-4">
+               <Store className="h-4 w-4 text-gray-500" />
+               <h3 className="text-[14px] font-semibold text-gray-900">Retailer Readiness</h3>
+             </div>
+             <div className="flex justify-between items-end mb-2">
+               <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Current Stock</span>
+               <span className="text-[16px] font-bold text-gray-900">85%</span>
+             </div>
+             <div className="h-1.5 w-full bg-[#E8EEE9] rounded-full mb-6 overflow-hidden flex">
+               <div className="h-full bg-[#0D7A43] w-[85%] rounded-full" />
+             </div>
+             <div className="enterprise-inset flex justify-between items-center rounded-[12px] px-3 py-2">
+               <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Coverage</span>
+               <span className="text-[13px] font-semibold text-gray-900">12 Days</span>
+             </div>
+          </DashboardCard>
+
+          <DashboardCard className="border-[#E8C36F]/35 bg-[#FFF8E7] p-5 flex-1">
+             <div className="flex items-center gap-2 mb-3">
+               <CloudRain className="h-4 w-4 text-red-500" />
+               <h3 className="text-[14px] font-semibold text-gray-900">Weather Trigger</h3>
+             </div>
+             <p className="text-[13px] font-semibold text-red-600 mb-2">High Risk: Heavy Rain</p>
+             <p className="text-[12px] text-gray-700 leading-relaxed mb-4">Deployment delay suggested for Northern Karnataka blocks.</p>
+             <div className="mt-auto flex justify-between items-center pt-2">
+               <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Confidence</span>
+               <span className="text-[14px] font-bold text-gray-900">88%</span>
+             </div>
+          </DashboardCard>
+        </div>
+
+      </motion.div>
+
+      {/* Level 6: Execution Tracking */}
       <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 xl:grid-cols-12">
         <div className="xl:col-span-5">
           <CampaignPriorityCard scenarios={scenarios} />
@@ -220,27 +244,22 @@ export function PlannerClient({ scenarios, context, recommendations, fieldAction
           <SegmentOpportunityCard />
           <OperationalTimeline events={workflowState?.events} />
         </div>
-        <div className="xl:col-span-3">
+        <div className="grid gap-4 xl:col-span-3">
           <FunnelAnalyticsCard data={analytics.charts.weekly_funnel} />
+          <DemoScenarioCard />
         </div>
-      </motion.div>
-
-      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 xl:grid-cols-[1fr_0.4fr]">
-        <LiveIntelligenceStrip events={liveEvents} />
-        <DemoScenarioCard />
       </motion.div>
 
       <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}>
         <RepExecutionTable actions={fieldActions.actions} />
       </motion.div>
-      <SystemHealthStrip />
     </motion.div>
   );
 }
 
 function PlannerField({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[16px] border border-border bg-card-soft px-3 py-2.5">
+    <div className="enterprise-inset rounded-[16px] px-3 py-2.5">
       <p className="text-[11px] font-medium text-muted">{label}</p>
       <p className="mt-1 text-sm font-semibold leading-5 text-foreground">{value}</p>
     </div>
@@ -249,7 +268,7 @@ function PlannerField({ label, value }: { label: string; value: string }) {
 
 function SignalTile({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
-    <div className="rounded-[16px] border border-border bg-white px-3 py-2">
+    <div className="enterprise-inset rounded-[16px] px-3 py-2">
       <div className="flex items-center gap-2">
         <Icon className="h-4 w-4 text-field" />
         <p className="text-[11px] font-medium text-muted">{label}</p>
@@ -264,10 +283,10 @@ function getFallbackKpis(role: string, roleConfig: any) {
   switch (role) {
     case "Campaign Manager":
       return [
-        { label: roleConfig.kpiPriorities[0], value: "12.4%", trend: "+2.1% this week", metadata: "conversion rate", icon: Target, tone: "success" },
-        { label: roleConfig.kpiPriorities[1], value: "3", trend: "needs attention", metadata: "pending approval", icon: BrainCircuit, tone: "warning" },
-        { label: roleConfig.kpiPriorities[2], value: "4,250", trend: "+800 over baseline", metadata: "expected leads", icon: Languages, tone: "ai" },
-        { label: roleConfig.kpiPriorities[3], value: "85%", trend: "steady", metadata: "segment penetration", icon: UsersRound, tone: "field" },
+        { label: "TOTAL FIELD REACH", value: "1.2M", trend: "+12%", icon: UsersRound, tone: "ai" },
+        { label: "ACTIVE CAMPAIGNS", value: "48", trend: "-2%", icon: Megaphone, tone: "warning" },
+        { label: "AI INSIGHTS GENERATED", value: "892", trend: "+24%", icon: BrainCircuit, tone: "ai" },
+        { label: "DEPLOYMENT READINESS", value: "94%", trend: "+5%", icon: ShieldCheck, tone: "success" },
       ];
     case "Territory Manager":
       return [
