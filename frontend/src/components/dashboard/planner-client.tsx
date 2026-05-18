@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { BrainCircuit, CloudRain, Languages, Leaf, MapPin, PackageCheck, ShieldCheck, Smartphone, Target, AlertTriangle, Store, ClipboardList } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { BrainCircuit, CloudRain, Languages, Leaf, MapPin, PackageCheck, ShieldCheck, Smartphone, Target, AlertTriangle, Store, ClipboardList, UsersRound } from "lucide-react";
 import { AiInsightBanner } from "@/components/insights/ai-insight-banner";
 import { AIRecommendationCard } from "@/components/insights/ai-recommendation-card";
 import { KpiStatCard } from "@/components/cards/kpi-stat-card";
@@ -15,60 +17,114 @@ import { RetailerReadinessCard } from "@/components/operations/retailer-readines
 import { SegmentOpportunityCard } from "@/components/operations/segment-opportunity-card";
 import { WeatherTriggerPanel } from "@/components/operations/weather-trigger-panel";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useRole } from "@/lib/contexts/RoleContext";
 import { OperationalAlertBanner } from "@/components/ui/operational-alert-banner";
+import { LiveIntelligenceStrip } from "@/components/ui/live-intelligence-strip";
+import { DemoScenarioCard } from "@/components/ui/demo-scenario-card";
+import { SystemHealthStrip } from "@/components/ui/system-health-strip";
+import { fetchOperationalEvents, fetchDynamicKpis } from "@/services/api";
+import type { KpiItem, OperationalEvent } from "@/types/workflow";
 
-export function PlannerClient({ scenarios, context, recommendations, fieldActions, analytics }: any) {
+// Icon map for dynamic KPI rendering
+const ICON_MAP: Record<string, any> = {
+  "Expected Campaign Lift": Target,
+  "Approval Queue": BrainCircuit,
+  "Conversion Forecast": Languages,
+  "Segment Reach": UsersRound,
+  "Territory Readiness": MapPin,
+  "Blocked Campaigns": AlertTriangle,
+  "Retailer Coverage": Store,
+  "Field Completion %": ClipboardList,
+  "Assigned Actions": ClipboardList,
+  "Pending Visits": Target,
+  "Priority Growers": CloudRain,
+  "Execution Deadlines": Leaf,
+  "Stock Risk": AlertTriangle,
+  "Replenishment Urgency": PackageCheck,
+  "Inventory Blockers": Store,
+  "Coverage Gaps": ShieldCheck,
+};
+
+export function PlannerClient({ scenarios, context, recommendations, fieldActions, analytics, workflowState }: any) {
   const { role, roleConfig } = useRole();
   const topRecommendation = recommendations.recommendations[0];
+  const workflowId = workflowState?.workflow_id;
+
+  // Dynamic KPIs from backend
+  const [dynamicKpis, setDynamicKpis] = useState<KpiItem[]>([]);
+  const [liveEvents, setLiveEvents] = useState<OperationalEvent[]>([]);
+
+  useEffect(() => {
+    if (!workflowId) return;
+    const roleKey = role.toLowerCase().replace(/ /g, "_");
+
+    // Fetch dynamic KPIs
+    fetchDynamicKpis(roleKey, workflowId).then(data => {
+      if (data?.kpis?.length) setDynamicKpis(data.kpis);
+    }).catch(() => {});
+
+    // Fetch operational events for intelligence strip
+    fetchOperationalEvents(roleKey, workflowId).then(data => {
+      if (data?.events?.length) setLiveEvents(data.events);
+    }).catch(() => {});
+
+    // Polling interval for live events
+    const interval = setInterval(() => {
+      fetchOperationalEvents(roleKey, workflowId).then(data => {
+        if (data?.events?.length) setLiveEvents(data.events);
+      }).catch(() => {});
+    }, 30_000);
+
+    return () => clearInterval(interval);
+  }, [workflowId, role]);
 
   const renderKpis = () => {
-    switch (role) {
-      case "Campaign Manager":
-        return (
-          <>
-            <KpiStatCard label={roleConfig.kpiPriorities[0]} value="12.4%" trend="+2.1% this week" metadata="conversion rate" icon={Target} tone="success" />
-            <KpiStatCard label={roleConfig.kpiPriorities[1]} value="3" trend="needs attention" metadata="pending approval" icon={BrainCircuit} tone="warning" />
-            <KpiStatCard label={roleConfig.kpiPriorities[2]} value="4,250" trend="+800 over baseline" metadata="expected leads" icon={Languages} tone="ai" />
-            <KpiStatCard label={roleConfig.kpiPriorities[3]} value="85%" trend="steady" metadata="segment penetration" icon={UsersRound} tone="field" />
-          </>
-        );
-      case "Territory Manager":
-        return (
-          <>
-            <KpiStatCard label={roleConfig.kpiPriorities[0]} value="92%" trend="ready to deploy" metadata="3 regions" icon={MapPin} tone="success" />
-            <KpiStatCard label={roleConfig.kpiPriorities[1]} value="2" trend="weather/stock risks" metadata="requires escalation" icon={AlertTriangle} tone="warning" />
-            <KpiStatCard label={roleConfig.kpiPriorities[2]} value="142" trend="active retailers" metadata="96% coverage" icon={Store} tone="ai" />
-            <KpiStatCard label={roleConfig.kpiPriorities[3]} value="64%" trend="on track" metadata="rep completion" icon={ClipboardList} tone="field" />
-          </>
-        );
-      case "Field Representative":
-        return (
-          <>
-            <KpiStatCard label={roleConfig.kpiPriorities[0]} value="18" trend="assigned today" metadata="in queue" icon={ClipboardList} tone="field" />
-            <KpiStatCard label={roleConfig.kpiPriorities[1]} value="12" trend="high priority" metadata="due this week" icon={Target} tone="warning" />
-            <KpiStatCard label={roleConfig.kpiPriorities[2]} value="6" trend="weather risk" metadata="urgent visits" icon={CloudRain} tone="ai" />
-            <KpiStatCard label={roleConfig.kpiPriorities[3]} value="2 days" trend="average deadline" metadata="on time" icon={Leaf} tone="success" />
-          </>
-        );
-      case "Retailer Support":
-        return (
-          <>
-            <KpiStatCard label={roleConfig.kpiPriorities[0]} value="High" trend="Tilt 250 EC" metadata="critical alert" icon={AlertTriangle} tone="warning" />
-            <KpiStatCard label={roleConfig.kpiPriorities[1]} value="4" trend="escalations" metadata="needs dispatch" icon={PackageCheck} tone="field" />
-            <KpiStatCard label={roleConfig.kpiPriorities[2]} value="3" trend="blocked campaigns" metadata="due to stock" icon={Store} tone="ai" />
-            <KpiStatCard label={roleConfig.kpiPriorities[3]} value="94%" trend="overall health" metadata="steady" icon={ShieldCheck} tone="success" />
-          </>
-        );
-      default:
-        return null;
+    // Use backend-computed KPIs if available
+    if (dynamicKpis.length > 0) {
+      return (
+        <>
+          {dynamicKpis.slice(0, 4).map((kpi, i) => (
+            <KpiStatCard
+              key={kpi.label}
+              label={kpi.label}
+              value={kpi.value}
+              trend={kpi.trend}
+              metadata={kpi.metadata || ""}
+              icon={ICON_MAP[kpi.label] || Target}
+              tone={kpi.tone as any}
+            />
+          ))}
+        </>
+      );
     }
+
+    // Fallback: static KPIs from roleConfig (backward compatibility)
+    const fallbackKpis = getFallbackKpis(role, roleConfig);
+    return (
+      <>
+        {fallbackKpis.map((kpi: any) => (
+          <KpiStatCard key={kpi.label} {...kpi} />
+        ))}
+      </>
+    );
   };
 
   return (
-    <div className="space-y-4">
-      <OperationalAlertBanner />
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: { staggerChildren: 0.1 }
+        }
+      }}
+      className="space-y-4"
+    >
+      <OperationalAlertBanner
+        alerts={workflowState?.alerts}
+      />
 
       {role === "Campaign Manager" && (
         <AiInsightBanner
@@ -78,11 +134,11 @@ export function PlannerClient({ scenarios, context, recommendations, fieldAction
         />
       )}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {renderKpis()}
-      </div>
+      </motion.div>
 
-      <div className="grid gap-4 xl:grid-cols-12">
+      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 xl:grid-cols-12">
         {(role === "Campaign Manager" || role === "Territory Manager") && (
           <DashboardCard className="xl:col-span-4">
             <SectionHeader
@@ -113,7 +169,7 @@ export function PlannerClient({ scenarios, context, recommendations, fieldAction
             </div>
             <div className="mt-5 flex flex-wrap items-center gap-3">
               <Button asChild>
-                <Link href="/recommendations?context_id=CTX_001">{roleConfig.primaryAction}</Link>
+                <Link href={`/recommendations?context_id=${context.context_id || "CTX_001"}${workflowId ? `&workflow=${workflowId}` : ""}`}>{roleConfig.primaryAction}</Link>
               </Button>
             </div>
           </DashboardCard>
@@ -137,23 +193,48 @@ export function PlannerClient({ scenarios, context, recommendations, fieldAction
           <RetailerReadinessCard alerts={context.inventory_alerts} />
           <WeatherTriggerPanel insight={context.weather_insights[0]} />
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid gap-4 xl:grid-cols-12">
+      {/* Next-best-action banner */}
+      {workflowState?.next_action && (
+        <div className="rounded-2xl border border-brand/20 bg-brand/5 px-5 py-4 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-brand">{workflowState.next_action.action}</p>
+            <p className="text-xs text-muted mt-0.5">{workflowState.next_action.reason} · {workflowState.next_action.assigned_role}</p>
+          </div>
+          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+            workflowState.next_action.priority === "high" ? "bg-amber-100 text-amber-800" :
+            workflowState.next_action.priority === "medium" ? "bg-blue-100 text-blue-800" :
+            "bg-zinc-100 text-zinc-600"
+          }`}>
+            {workflowState.next_action.priority} priority
+          </span>
+        </div>
+      )}
+
+      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 xl:grid-cols-12">
         <div className="xl:col-span-5">
           <CampaignPriorityCard scenarios={scenarios} />
         </div>
         <div className="grid gap-4 xl:col-span-4">
           <SegmentOpportunityCard />
-          <OperationalTimeline />
+          <OperationalTimeline events={workflowState?.events} />
         </div>
         <div className="xl:col-span-3">
           <FunnelAnalyticsCard data={analytics.charts.weekly_funnel} />
         </div>
-      </div>
+      </motion.div>
 
-      <RepExecutionTable actions={fieldActions.actions} />
-    </div>
+      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }} className="grid gap-4 xl:grid-cols-[1fr_0.4fr]">
+        <LiveIntelligenceStrip events={liveEvents} />
+        <DemoScenarioCard />
+      </motion.div>
+
+      <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}>
+        <RepExecutionTable actions={fieldActions.actions} />
+      </motion.div>
+      <SystemHealthStrip />
+    </motion.div>
   );
 }
 
@@ -177,5 +258,39 @@ function SignalTile({ icon: Icon, label, value }: { icon: any; label: string; va
     </div>
   );
 }
-// Add UsersRound missing import above
-import { UsersRound } from "lucide-react";
+
+/** Fallback static KPIs for backward compatibility when backend is unavailable */
+function getFallbackKpis(role: string, roleConfig: any) {
+  switch (role) {
+    case "Campaign Manager":
+      return [
+        { label: roleConfig.kpiPriorities[0], value: "12.4%", trend: "+2.1% this week", metadata: "conversion rate", icon: Target, tone: "success" },
+        { label: roleConfig.kpiPriorities[1], value: "3", trend: "needs attention", metadata: "pending approval", icon: BrainCircuit, tone: "warning" },
+        { label: roleConfig.kpiPriorities[2], value: "4,250", trend: "+800 over baseline", metadata: "expected leads", icon: Languages, tone: "ai" },
+        { label: roleConfig.kpiPriorities[3], value: "85%", trend: "steady", metadata: "segment penetration", icon: UsersRound, tone: "field" },
+      ];
+    case "Territory Manager":
+      return [
+        { label: roleConfig.kpiPriorities[0], value: "92%", trend: "ready to deploy", metadata: "3 regions", icon: MapPin, tone: "success" },
+        { label: roleConfig.kpiPriorities[1], value: "2", trend: "weather/stock risks", metadata: "requires escalation", icon: AlertTriangle, tone: "warning" },
+        { label: roleConfig.kpiPriorities[2], value: "142", trend: "active retailers", metadata: "96% coverage", icon: Store, tone: "ai" },
+        { label: roleConfig.kpiPriorities[3], value: "64%", trend: "on track", metadata: "rep completion", icon: ClipboardList, tone: "field" },
+      ];
+    case "Field Representative":
+      return [
+        { label: roleConfig.kpiPriorities[0], value: "18", trend: "assigned today", metadata: "in queue", icon: ClipboardList, tone: "field" },
+        { label: roleConfig.kpiPriorities[1], value: "12", trend: "high priority", metadata: "due this week", icon: Target, tone: "warning" },
+        { label: roleConfig.kpiPriorities[2], value: "6", trend: "weather risk", metadata: "urgent visits", icon: CloudRain, tone: "ai" },
+        { label: roleConfig.kpiPriorities[3], value: "2 days", trend: "average deadline", metadata: "on time", icon: Leaf, tone: "success" },
+      ];
+    case "Retailer Support":
+      return [
+        { label: roleConfig.kpiPriorities[0], value: "High", trend: "Tilt 250 EC", metadata: "critical alert", icon: AlertTriangle, tone: "warning" },
+        { label: roleConfig.kpiPriorities[1], value: "4", trend: "escalations", metadata: "needs dispatch", icon: PackageCheck, tone: "field" },
+        { label: roleConfig.kpiPriorities[2], value: "3", trend: "blocked campaigns", metadata: "due to stock", icon: Store, tone: "ai" },
+        { label: roleConfig.kpiPriorities[3], value: "94%", trend: "overall health", metadata: "steady", icon: ShieldCheck, tone: "success" },
+      ];
+    default:
+      return [];
+  }
+}

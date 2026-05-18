@@ -115,3 +115,82 @@ export function exportPlan(planId = "PLAN_001", exportType: "csv" | "whatsapp_pa
     })
   });
 }
+
+
+// ---------------------------------------------------------------------------
+// Workflow Orchestration API
+// ---------------------------------------------------------------------------
+
+import type {
+  WorkflowState,
+  WorkflowStartRequest,
+  KpiData,
+  OperationalEvent,
+  SystemHealth,
+  WorkflowEvent
+} from "@/types/workflow";
+
+const EMPTY_WORKFLOW: WorkflowState = {
+  schema_version: "syngenta-copilot.v1",
+  request_id: "",
+  generated_at: new Date().toISOString(),
+  source_mode: "mock",
+  warnings: ["Using demo fallback"],
+  workflow_id: "",
+  plan_id: "PLAN_001",
+  context_id: "CTX_001",
+  status: "fallback",
+  context: null,
+  recommendations: [],
+  content_variants: [],
+  events: [],
+  kpis: null,
+  alerts: [],
+  next_action: null,
+  system_health: null,
+};
+
+export async function startWorkflow(request?: WorkflowStartRequest): Promise<WorkflowState> {
+  const body = request || {
+    crop: "wheat",
+    product: "Tilt 250 EC",
+    objective: "lead_generation",
+    week_start_date: "2026-02-16",
+    geography: { state: "Uttar Pradesh", district: "Kanpur Nagar" },
+    audience: { languages: ["Hindi"], device_types: ["smartphone"] },
+    channel_preferences: ["whatsapp", "sms", "field_rep"],
+    constraints: { low_bandwidth: true, human_review_required: true, min_stock_cover_days: 10 },
+    role: "campaign_manager",
+  };
+  return fetchOrFallback<WorkflowState>("/api/v1/workflow/start", EMPTY_WORKFLOW, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function fetchWorkflowState(workflowId: string): Promise<WorkflowState> {
+  return fetchOrFallback<WorkflowState>(`/api/v1/workflow/${workflowId}`, EMPTY_WORKFLOW);
+}
+
+export async function fetchDynamicKpis(role = "campaign_manager", workflowId?: string): Promise<KpiData> {
+  const fallback: KpiData = { role, kpis: [] };
+  if (!workflowId) return fallback;
+  return fetchOrFallback<KpiData>(`/api/v1/workflow/${workflowId}/kpis?role=${encodeURIComponent(role)}`, fallback);
+}
+
+export async function fetchOperationalEvents(role = "campaign_manager", workflowId?: string): Promise<{ role: string; events: OperationalEvent[] }> {
+  const fallback = { role, events: [] as OperationalEvent[] };
+  const params = new URLSearchParams({ role });
+  if (workflowId) params.set("workflow_id", workflowId);
+  return fetchOrFallback(`/api/v1/operational-events?${params.toString()}`, fallback);
+}
+
+export async function fetchWorkflowEvents(workflowId: string): Promise<{ workflow_id: string; events: WorkflowEvent[] }> {
+  return fetchOrFallback(`/api/v1/workflow/${workflowId}/events`, { workflow_id: workflowId, events: [] });
+}
+
+export async function fetchSystemHealth(): Promise<SystemHealth> {
+  const fallback: SystemHealth = { gemini: "unknown", supabase: "unknown", cache: "unknown", data_mode: "unknown", active_workflows: 0, last_generation_source: "unknown" };
+  return fetchOrFallback("/api/v1/system/health", fallback);
+}
+

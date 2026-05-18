@@ -9,15 +9,24 @@ import { Badge } from "@/components/ui/badge";
 import { RiskBadge } from "@/components/cards/risk-badge";
 import { useRole } from "@/lib/contexts/RoleContext";
 import { ExplainabilityBadge } from "@/components/ui/explainability-badge";
+import { ConfidenceBar } from "@/components/ui/confidence-bar";
+import { cn } from "@/lib/utils";
 
 export function RecommendationCard({ recommendation }: { recommendation: Recommendation }) {
   const { roleConfig } = useRole();
+
+  const getCardBorder = () => {
+    if (recommendation.blocked) return "border-rose-200 bg-rose-50/30";
+    if (recommendation.timing.urgency === "high") return "border-emerald-200/60 bg-card-soft";
+    return "border-border bg-card-soft";
+  };
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
-      className="rounded-[22px] border border-border bg-card-soft p-4 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_16px_38px_rgba(31,56,88,0.08)]"
+      className={cn("rounded-[22px] border p-4 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_16px_38px_rgba(31,56,88,0.08)]", getCardBorder())}
     >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
@@ -38,9 +47,9 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
       </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-3">
-        <MiniMetric label="Advisory open probability" value={formatPercent(recommendation.receptivity.open_probability)} />
-        <MiniMetric label="Grower response probability" value={formatPercent(recommendation.receptivity.click_probability)} />
-        <MiniMetric label="Recommendation confidence" value={formatPercent(recommendation.receptivity.confidence)} />
+        <MiniMetric label="Advisory open probability" value={formatPercent(recommendation.receptivity.open_probability)} barValue={recommendation.receptivity.open_probability} />
+        <MiniMetric label="Grower response probability" value={formatPercent(recommendation.receptivity.click_probability)} barValue={recommendation.receptivity.click_probability} />
+        <MiniMetric label="Recommendation confidence" value={formatPercent(recommendation.receptivity.confidence)} barValue={recommendation.receptivity.confidence} />
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
@@ -81,11 +90,12 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
   );
 }
 
-function MiniMetric({ label, value }: { label: string; value: string }) {
+function MiniMetric({ label, value, barValue }: { label: string; value: string; barValue?: number }) {
   return (
     <div className="rounded-[16px] border border-border bg-white px-4 py-3">
       <p className="text-[11px] font-medium text-muted">{label}</p>
       <p className="mt-1 text-lg font-semibold text-foreground">{value}</p>
+      {barValue !== undefined && <ConfidenceBar value={barValue} size="sm" showValue={false} className="mt-1.5" />}
     </div>
   );
 }

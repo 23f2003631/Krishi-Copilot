@@ -6,13 +6,16 @@ export const metadata: Metadata = {
   description: "AI operations control room for crop-stage-aware campaign orchestration."
 };
 import { RoleProvider } from "@/lib/contexts/RoleContext";
+import { WorkflowProvider } from "@/lib/providers/workflow-context";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body>
         <RoleProvider>
-          {children}
+          <WorkflowProvider>
+            {children}
+          </WorkflowProvider>
         </RoleProvider>
       </body>
     </html>
