@@ -1,36 +1,41 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: Inter, Geist, Satoshi, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --color-background: #F7F8F7;
-  --color-foreground: #020604;
-  --color-muted: #6B756F;
-  --color-border: rgba(15,23,42,0.06);
+  --font-sans: var(--font-geist-sans), Inter, system-ui, sans-serif;
+  --color-background: #F5F7F6;
+  --color-foreground: #070B09;
+  --color-muted: #64748B;
+  --color-border: rgba(0, 0, 0, 0.06);
   --color-card: #ffffff;
-  --color-card-soft: #F7F8F7;
-  --color-shell: #F7F8F7;
-  --color-ai: #9AFB35;
-  --color-field: #35ECA4;
-  --color-olive: #064E3B;
-  --color-lime: #9AFB35;
-  --color-success: #35ECA4;
-  --color-warning: #c9891a;
-  --color-danger: #b85a3d;
-  --color-cyan: #3a9ba1;
+  --color-card-soft: #F8FAF9;
+  --color-shell: #F0F2F1;
+  --color-ai: #0D7A43;
+  --color-field: #1F9D62;
+  --color-olive: #0B5B34;
+  --color-success: #1F9D62;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+  --color-cyan: #0E7490;
 }
 
 :root {
-  --surface-shell: #F7F8F7;
+  --surface-shell: #F0F2F1;
   --surface-card: #ffffff;
-  --surface-card-soft: #F7F8F7;
-  --accent-ai: #9AFB35;
-  --accent-field: #35ECA4;
-  --accent-cyan: #3a9ba1;
-  --accent-olive: #064E3B;
-  --accent-lime: #9AFB35;
-  --border-soft: rgba(15,23,42,0.06);
-  --text-main: #020604;
-  --text-muted: #6B756F;
+  --surface-card-soft: #F8FAF9;
+  --surface-matte: #F6F8F6;
+  --surface-matte-deep: #E8EEE9;
+  --accent-ai: #0D7A43;
+  --accent-field: #1F9D62;
+  --accent-soft: #B7D8C3;
+  --accent-surface: #DDEADF;
+  --accent-cyan: #0E7490;
+  --accent-olive: #0B5B34;
+  --border-soft: rgba(0, 0, 0, 0.06);
+  --border-lit: rgba(255, 255, 255, 0.8);
+  --text-main: #070B09;
+  --text-muted: #64748B;
+  --shadow-ambient: 0 18px 50px rgba(11, 23, 16, 0.08);
+  --shadow-studio: 0 1px 2px rgba(9, 18, 13, 0.05), 0 14px 34px rgba(9, 18, 13, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.82);
 }
 
 * {
@@ -39,6 +44,7 @@
 
 html {
   min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -47,76 +53,197 @@ body {
   background: var(--color-background);
   color: var(--text-main);
   font-family: var(--font-sans);
-  letter-spacing: -0.01em; /* Optical restraint */
+  letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography Physics */
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+/* ═══════════════════════════════════════════════
+   TYPOGRAPHY PHYSICS - Geist Optimized
+   ═══════════════════════════════════════════════ */
+h1 {
+  letter-spacing: 0;
+  line-height: 1.02;
 }
-
+h2 {
+  letter-spacing: 0;
+  line-height: 1.08;
+}
+h3, h4, h5, h6 {
+  letter-spacing: 0;
+  line-height: 1.15;
+}
 p {
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-/* Surface Elevation Hierarchy */
-.shell-shadow {
-  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.04);
-}
-
-.card-shadow {
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
-}
-
-/* Cinematic Utilities */
-.glass-panel {
-  background: rgba(8, 14, 11, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
-}
-
+/* ═══════════════════════════════════════════════
+   SURFACE ELEVATION HIERARCHY
+   ═══════════════════════════════════════════════ */
 .control-card {
   position: relative;
   overflow: hidden;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(251, 253, 253, 0.98) 100%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(246, 249, 247, 0.94)),
     #ffffff;
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 14px 42px rgba(31, 56, 88, 0.075);
+    0 1px 2px rgba(9, 18, 13, 0.04),
+    0 16px 36px rgba(9, 18, 13, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(11, 91, 52, 0.08);
 }
-
 .control-card::before {
   content: "";
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 3px;
-  background: linear-gradient(180deg, rgba(49, 72, 58, 0.88), rgba(127, 177, 43, 0.58));
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.01) 100%
+  );
+}
+
+/* ═══════════════════════════════════════════════
+   CINEMATIC GLASS PANEL (Landing Page Hero)
+   ═══════════════════════════════════════════════ */
+.glass-panel {
+  background: rgba(6, 10, 8, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    0 32px 64px rgba(0, 0, 0, 0.4),
+    0 80px 160px rgba(0, 0, 0, 0.5);
+}
+
+.landing-canvas {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(183, 216, 195, 0.06), transparent 34%),
+    linear-gradient(180deg, #050806 0%, #060907 42%, #040604 100%);
+}
+
+.cinematic-dashboard-frame {
+  transform-origin: center center;
+}
+
+.premium-story-card::before,
+.premium-story-card::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.premium-story-card::before {
+  inset: 1px;
+  z-index: 2;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.14), transparent 34%),
+    radial-gradient(circle at 72% 78%, rgba(29, 155, 98, 0.1), transparent 38%);
+  mix-blend-mode: screen;
+}
+
+.premium-story-card::after {
+  inset: -24px;
+  z-index: -1;
+  background: radial-gradient(circle at 50% 62%, rgba(29, 155, 98, 0.1), transparent 64%);
+  filter: blur(28px);
   opacity: 0.72;
 }
 
+.enterprise-surface {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.88), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(246, 249, 247, 0.94) 46%, rgba(232, 238, 233, 0.96));
+  border: 1px solid rgba(11, 91, 52, 0.085);
+  box-shadow: var(--shadow-studio);
+}
+
+.enterprise-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(13, 122, 67, 0.045), transparent 42%);
+}
+
+.enterprise-surface::after {
+  content: "";
+  position: absolute;
+  inset: auto 14px 0;
+  height: 36px;
+  pointer-events: none;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(180deg, transparent, rgba(7, 11, 9, 0.035));
+  filter: blur(10px);
+}
+
+.enterprise-inset {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(248, 250, 249, 0.95)),
+    var(--surface-card-soft);
+  border: 1px solid rgba(11, 91, 52, 0.075);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.88),
+    inset 0 -18px 32px rgba(9, 18, 13, 0.028);
+}
+
+.dashboard-operating-bg {
+  background:
+    radial-gradient(circle at 14% 8%, rgba(183, 216, 195, 0.34), transparent 26%),
+    radial-gradient(circle at 78% 16%, rgba(221, 234, 223, 0.62), transparent 30%),
+    linear-gradient(135deg, #F4F7F4 0%, #EDF2EE 48%, #E8EEE9 100%);
+}
+
+/* ═══════════════════════════════════════════════
+   FIELD GRID (Dashboard Background)
+   ═══════════════════════════════════════════════ */
 .field-grid {
   background-image:
-    linear-gradient(rgba(49, 72, 58, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(49, 72, 58, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(13, 122, 67, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 122, 67, 0.03) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
+/* ═══════════════════════════════════════════════
+   SCROLL & UTILITIES
+   ═══════════════════════════════════════════════ */
 .soft-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #cbd7dd transparent;
 }
-
 .soft-scrollbar::-webkit-scrollbar {
   height: 8px;
   width: 8px;
 }
-
 .soft-scrollbar::-webkit-scrollbar-thumb {
   background: #cbd7dd;
   border-radius: 999px;
+}
+
+/* GPU compositing hints for animations */
+.transform-gpu {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Cinematic noise texture overlay */
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
