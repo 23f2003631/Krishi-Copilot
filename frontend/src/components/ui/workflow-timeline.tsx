@@ -19,11 +19,11 @@ export function WorkflowTimeline({ steps, className }: WorkflowTimelineProps) {
         <div key={index} className="flex gap-4">
           <div className="flex flex-col items-center">
             {step.status === "completed" ? (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#DDEADF] text-[#0D7A43]">
                 <Check className="h-3.5 w-3.5" />
               </div>
             ) : step.status === "current" ? (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-600 ring-4 ring-blue-50">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#DDEADF] text-[#0B5B34] ring-4 ring-[#DDEADF]/45">
                 <Circle className="h-2 w-2 fill-current" />
               </div>
             ) : (
@@ -32,13 +32,13 @@ export function WorkflowTimeline({ steps, className }: WorkflowTimelineProps) {
               </div>
             )}
             {index < steps.length - 1 && (
-              <div className={cn("w-px h-full min-h-[24px] mt-2", step.status === "completed" ? "bg-emerald-200" : "bg-gray-200")} />
+              <div className={cn("w-px h-full min-h-[24px] mt-2", step.status === "completed" ? "bg-[#B7D8C3]" : "bg-gray-200")} />
             )}
           </div>
           <div className="flex flex-col pb-4 pt-0.5">
             <span className={cn("text-sm font-medium", 
               step.status === "completed" ? "text-foreground" : 
-              step.status === "current" ? "text-blue-900" : "text-muted"
+              step.status === "current" ? "text-[#0B5B34]" : "text-muted"
             )}>
               {step.label}
             </span>

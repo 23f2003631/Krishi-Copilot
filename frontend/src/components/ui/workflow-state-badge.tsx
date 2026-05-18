@@ -11,9 +11,9 @@ export function WorkflowStateBadge({ state, className }: WorkflowStateBadgeProps
   const config = {
     draft: { label: "Draft", style: "bg-gray-100 text-gray-700 border-gray-200" },
     pending_review: { label: "Pending Review", style: "bg-amber-100 text-amber-800 border-amber-200" },
-    approved: { label: "Approved", style: "bg-emerald-100 text-emerald-800 border-emerald-200" },
+    approved: { label: "Approved", style: "bg-[#DDEADF] text-[#0D7A43] border-[#B7D8C3]" },
     blocked: { label: "Blocked", style: "bg-rose-100 text-rose-800 border-rose-200" },
-    ready: { label: "Ready to Deploy", style: "bg-blue-100 text-blue-800 border-blue-200" },
+    ready: { label: "Ready to Deploy", style: "bg-[#DDEADF] text-[#0B5B34] border-[#B7D8C3]" },
   };
 
   const { label, style } = config[state] || config.draft;
