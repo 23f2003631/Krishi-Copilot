@@ -1,83 +1,61 @@
-import Link from "next/link";
-import { ArrowRight, BrainCircuit, Gauge, ShieldCheck } from "lucide-react";
-import type { Recommendation } from "@/types/contracts";
-import { AIReasoningChips } from "@/components/insights/ai-reasoning-chips";
-import { RiskIntensityBadge } from "@/components/cards/risk-intensity-badge";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { DeploymentConfidenceMeter } from "@/components/ui/deployment-confidence-meter";
-import { cn } from "@/lib/utils";
+import { Zap, MessageSquare } from "lucide-react";
 
-export function AIRecommendationCard({ recommendation }: { recommendation: Recommendation }) {
-  const confidence = Math.round(recommendation.receptivity.confidence * 100);
-  
-  const getCardAccent = () => {
-    if (recommendation.blocked) return "border-rose-200/80 shadow-[0_0_0_1px_rgba(244,63,94,0.06),0_10px_32px_rgba(244,63,94,0.08)]";
-    if (recommendation.timing.urgency === "high") return "border-emerald-200/60 shadow-[0_0_0_1px_rgba(16,185,129,0.06),0_10px_32px_rgba(16,185,129,0.08)]";
-    return "border-border shadow-[0_10px_32px_rgba(31,56,88,0.06)]";
-  };
-
+export function AIRecommendationCard() {
   return (
-    <article className={cn("rounded-[22px] border bg-white p-4 transition-all duration-300", getCardAccent())}>
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge>Crop-stage next action</Badge>
-            <RiskIntensityBadge level={recommendation.timing.urgency} label={`${recommendation.timing.urgency} agronomic urgency`} />
-            <Badge variant={recommendation.blocked ? "danger" : "success"}>{recommendation.blocked ? "Stock gate hold" : "Deployment ready"}</Badge>
+    <article className="relative flex h-full flex-col overflow-hidden rounded-[22px] border border-[#0D7A43]/15 bg-[radial-gradient(circle_at_18%_0%,rgba(255,255,255,0.72),transparent_34%),linear-gradient(145deg,#DDEADF,#F7FAF8_46%,#FFFFFF)] p-5 shadow-[0_18px_44px_rgba(9,18,13,0.075),inset_0_1px_0_rgba(255,255,255,0.88)]">
+      <div className="pointer-events-none absolute inset-x-5 bottom-0 h-10 rounded-full bg-[#0B5B34]/[0.035] blur-xl" />
+      {/* Header */}
+      <div className="relative z-10 flex items-center gap-2 mb-4">
+        <Zap className="h-4 w-4 text-[#0D7A43]" />
+        <h3 className="text-[14px] font-bold text-[#0D7A43]">AI Recommendation Feed</h3>
+      </div>
+
+      {/* Main Inner Card */}
+      <div className="enterprise-inset relative z-10 flex flex-1 flex-col rounded-[18px] p-5">
+        <div className="flex items-start justify-between mb-4">
+          <span className="inline-flex items-center rounded-md border border-[#0D7A43]/15 bg-[#DDEADF] px-2 py-1 text-[11px] font-bold text-[#0D7A43] uppercase tracking-wider">
+            High Priority
+          </span>
+          <div className="text-right">
+            <p className="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Reliance Score</p>
+            <p className="text-[26px] font-bold text-[#0D7A43] leading-none mt-1">92%</p>
           </div>
-          <h3 className="mt-3 text-base font-semibold leading-6 text-foreground">{recommendation.segment_label}</h3>
-          <p className="mt-1 text-sm leading-5 text-muted">
-            {recommendation.product} | {recommendation.target_count.toLocaleString()} growers in cohort | {recommendation.timing.send_window}
-          </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="rounded-[16px] border border-border bg-card-soft px-3 py-2 text-right">
-            <p className="text-[11px] font-medium text-muted">Deployment score</p>
-            <p className="text-xl font-semibold text-foreground">{recommendation.priority_score}</p>
+
+        <h4 className="text-[18px] font-bold text-gray-900 mb-6">Activate WhatsApp Blast</h4>
+
+        <div className="space-y-4 mb-8">
+          <div className="flex justify-between border-b border-gray-100 pb-3">
+            <span className="text-[13px] text-gray-500">Segment</span>
+            <span className="text-[13px] font-semibold text-gray-900">Tier 1 Growers</span>
           </div>
-          <Button asChild size="sm">
-            <Link href="/content-studio">
-              Draft advisory
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <div className="flex justify-between border-b border-gray-100 pb-3">
+            <span className="text-[13px] text-gray-500">Product Focus</span>
+            <span className="text-[13px] font-semibold text-gray-900">Fortenza</span>
+          </div>
+          <div className="flex justify-between border-b border-gray-100 pb-3">
+            <span className="text-[13px] text-gray-500">Optimal Timing</span>
+            <span className="text-[13px] font-semibold text-gray-900">Next 48hrs</span>
+          </div>
+          <div className="flex justify-between pb-1">
+            <span className="text-[13px] text-gray-500">Channel</span>
+            <span className="text-[13px] font-semibold text-gray-900 flex items-center gap-1.5">
+              <MessageSquare className="h-3.5 w-3.5" />
+              WhatsApp
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-4">
-        <DeploymentConfidenceMeter 
-          confidence={recommendation.receptivity.confidence} 
-          urgency={recommendation.timing.urgency} 
-          blocked={recommendation.blocked} 
-        />
-      </div>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <Signal icon={BrainCircuit} label="Recommendation confidence" value={`${confidence}%`} />
-        <Signal icon={Gauge} label="Grower response proxy" value={`${Math.round(recommendation.expected_impact.expected_click_rate * 100)}%`} />
-        <Signal icon={ShieldCheck} label="Stock sufficiency gate" value={recommendation.blocked ? "Hold" : "Passed"} />
-      </div>
-
-      <div className="mt-4">
-        <AIReasoningChips reasons={recommendation.reason_codes} />
+        {/* Buttons */}
+        <div className="mt-auto flex items-center gap-3">
+          <button className="flex-1 rounded-[10px] bg-white border border-[#0B5B34]/10 py-2.5 text-[14px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+            Snooze
+          </button>
+          <button className="flex-1 rounded-[10px] bg-[#0D7A43] py-2.5 text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(13,122,67,0.2)] hover:bg-[#0A6235] transition-colors">
+            Deploy Now
+          </button>
+        </div>
       </div>
     </article>
   );
 }
-
-function Signal({ icon: Icon, label, value }: { icon: typeof BrainCircuit; label: string; value: string }) {
-  return (
-    <div className="flex items-center gap-3 rounded-[16px] border border-border bg-card-soft px-3 py-2">
-      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-field/10 text-field">
-        <Icon className="h-4 w-4" />
-      </span>
-      <div>
-        <p className="text-[11px] font-medium leading-4 text-muted">{label}</p>
-        <p className="text-sm font-semibold text-foreground">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-
