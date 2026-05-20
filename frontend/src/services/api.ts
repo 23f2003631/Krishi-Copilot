@@ -20,7 +20,12 @@ import {
   scenariosResponse
 } from "@/data/mock-data";
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+/** Vercel multi-service injects NEXT_PUBLIC_BACKEND_URL / BACKEND_URL when vercel.json defines a backend service. */
+export const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  process.env.NEXT_PUBLIC_BACKEND_URL ??
+  process.env.BACKEND_URL ??
+  "http://localhost:8000";
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
 function withCachedWarning<T>(fallback: T): T {
