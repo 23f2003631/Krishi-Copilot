@@ -97,14 +97,14 @@ export function LandingPageClient() {
       const heroTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       heroTimeline
-        .fromTo(".hero-kicker", { opacity: 0, y: 18, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8 })
+        .fromTo(".hero-kicker", { opacity: 0, y: 12, filter: "blur(4px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.0 })
         .fromTo(
           ".hero-title-line",
-          { opacity: 0, y: 32, filter: "blur(12px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.95, stagger: 0.1 },
-          "-=0.42"
+          { opacity: 0, y: 16, filter: "blur(6px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, stagger: 0.15 },
+          "-=0.6"
         )
-        .fromTo(".hero-copy, .hero-cta", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.72, stagger: 0.1 }, "-=0.42")
+        .fromTo(".hero-copy, .hero-cta", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.1 }, "-=0.6")
         .fromTo(".hero-light", { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 1.25, ease: "sine.out" }, "-=0.72")
         .fromTo(
           ".hero-dashboard-scene",
@@ -112,6 +112,20 @@ export function LandingPageClient() {
           { opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "power3.out" },
           "-=0.48"
         );
+
+      gsap.to(".hero-scroll-wrapper", {
+        y: 120,
+        scale: 0.9,
+        rotateX: 8,
+        opacity: 0.4,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero-scroll-wrapper",
+          start: "top 40%",
+          end: "bottom -20%",
+          scrub: 1,
+        },
+      });
 
       gsap.utils.toArray<HTMLElement>(".motion-reveal").forEach((element, index) => {
         gsap.fromTo(
@@ -164,25 +178,27 @@ export function LandingPageClient() {
 
       <main className="relative">
         <section className="relative overflow-hidden px-5 pb-24 pt-28 md:px-8 md:pb-32 md:pt-32">
-          <div className="hero-light pointer-events-none absolute left-1/2 top-[10%] h-[520px] w-[840px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.13),rgba(183,216,195,0.08)_30%,rgba(29,155,98,0.09)_43%,transparent_70%)] blur-2xl" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.052),transparent_34%),radial-gradient(circle_at_20%_42%,rgba(29,155,98,0.08),transparent_30%),radial-gradient(circle_at_80%_58%,rgba(183,216,195,0.055),transparent_34%)]" />
-          <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(183,216,195,0.28)_1px,transparent_1px),linear-gradient(90deg,rgba(183,216,195,0.22)_1px,transparent_1px)] [background-size:72px_72px]" />
+          <div className="hero-light pointer-events-none absolute left-1/2 top-[10%] h-[520px] w-[840px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),rgba(183,216,195,0.04)_30%,rgba(29,155,98,0.04)_43%,transparent_70%)] blur-2xl" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.03),transparent_34%),radial-gradient(circle_at_20%_42%,rgba(29,155,98,0.04),transparent_30%),radial-gradient(circle_at_80%_58%,rgba(183,216,195,0.03),transparent_34%)]" />
+          <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(183,216,195,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(183,216,195,0.2)_1px,transparent_1px)] [background-size:72px_72px]" />
           <div className="noise-overlay" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,transparent_48%,rgba(0,0,0,0.72)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,transparent_48%,rgba(0,0,0,0.4)_100%)]" />
 
           <div className="relative z-10 mx-auto flex max-w-[1180px] flex-col items-center text-center">
             <div className="hero-kicker inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.045] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#B7D8C3] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-xl">
               <span className="h-1.5 w-1.5 rounded-full bg-[#1F9D62] shadow-[0_0_16px_rgba(31,157,98,0.38)]" />
-              Enterprise agricultural intelligence
+              The next generation of precision Agriculture
             </div>
 
-            <h1 className="mt-7 max-w-[820px] text-[38px] font-semibold leading-[1.02] text-white sm:text-[50px] md:text-[64px] lg:text-[72px]">
-              <span className="hero-title-line block">Campaign intelligence,</span>
-              <span className="hero-title-line block text-white/90">grown from the field up.</span>
+            <h1 className="font-serif mt-7 flex flex-col items-center text-[clamp(2rem,6.5vw,4rem)] font-medium leading-[0.95] tracking-tight text-white sm:text-[clamp(3.5rem,7vw,5.5rem)] md:text-[clamp(4rem,8vw,7rem)]">
+              <div className="text-left">
+                <span className="hero-title-line block whitespace-nowrap">Simplify Your Workflow.</span>
+                <span className="hero-title-line block whitespace-nowrap text-white/90">Supercharge Your Team.</span>
+              </div>
             </h1>
 
             <p className="hero-copy mt-6 max-w-[560px] text-[14px] font-medium leading-7 text-white/58 md:text-[15px]">
-              Syngenta Krishi Copilot connects crop intelligence, weather signals, and retailer readiness into a single operational view.
+              Manage telemetry, field operation, and crop health in a unified high performance command center.
             </p>
 
             <div className="hero-cta mt-8 flex flex-col items-center gap-3 sm:flex-row">
@@ -197,7 +213,9 @@ export function LandingPageClient() {
               </motion.div>
             </div>
 
-            <HeroDashboardStage />
+            <div className="hero-scroll-wrapper mt-4 w-full perspective-[2000px] transform-gpu will-change-transform">
+              <HeroDashboardStage />
+            </div>
           </div>
         </section>
 
@@ -206,7 +224,7 @@ export function LandingPageClient() {
           <div className="relative z-10 mx-auto max-w-[1180px]">
             <RevealWrapper className="mx-auto max-w-[700px] text-center">
               <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#B7D8C3]/80">Intelligent Orchestration</p>
-              <h2 className="mt-4 text-[34px] font-semibold leading-[1.05] text-white md:text-[46px]">
+              <h2 className="font-serif mt-5 text-[38px] font-medium leading-[1.02] tracking-tight text-white md:text-[52px]">
                 Intelligence with visual tension, not visual noise.
               </h2>
               <p className="mt-5 text-[15px] leading-7 text-white/52">
@@ -251,7 +269,7 @@ export function LandingPageClient() {
                     <div className={reverse ? "md:order-1" : ""}>
                       <div className="max-w-[500px]">
                         <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#B7D8C3]/76">{section.eyebrow}</p>
-                        <h3 className="mt-5 text-[32px] font-semibold leading-[1.05] text-white md:text-[44px]">{section.title}</h3>
+                        <h3 className="font-serif mt-5 text-[34px] font-medium leading-[1.02] tracking-tight text-white md:text-[48px]">{section.title}</h3>
                         <p className="mt-6 text-[15px] leading-7 text-white/56">{section.description}</p>
                         <div className="mt-8 grid max-w-[430px] grid-cols-2 gap-3">
                           {["Context aware", "Auditable", "Field ready", "Governed"].map((label) => (
@@ -281,7 +299,7 @@ export function LandingPageClient() {
               <div className="noise-overlay" />
               <div className="relative z-10">
                 <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#B7D8C3]/78">Deployment ready</p>
-                <h2 className="mx-auto mt-5 max-w-[680px] text-[36px] font-semibold leading-[1.04] text-white md:text-[54px]">
+                <h2 className="font-serif mx-auto mt-6 max-w-[760px] text-[38px] font-medium leading-[1.02] tracking-tight text-white md:text-[58px]">
                   Turn field intelligence into coordinated action.
                 </h2>
                 <p className="mx-auto mt-6 max-w-[560px] text-[15px] leading-7 text-white/56">
