@@ -24,13 +24,14 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
 
 function withCachedWarning<T>(fallback: T): T {
-  if (typeof fallback !== "object" || fallback === null || !("warnings" in fallback)) {
+  if (typeof fallback !== "object" || fallback === null) {
     return fallback;
   }
-  const envelope = fallback as T & { warnings: string[] };
+  const envelope = fallback as any;
+  const existingWarnings = Array.isArray(envelope.warnings) ? envelope.warnings : [];
   return {
     ...envelope,
-    warnings: Array.from(new Set([...(envelope.warnings ?? []), "Using cached demo output"]))
+    warnings: Array.from(new Set([...existingWarnings, "Using cached demo output"]))
   };
 }
 
@@ -136,6 +137,13 @@ const EMPTY_WORKFLOW: WorkflowState = {
   generated_at: new Date().toISOString(),
   source_mode: "mock",
   warnings: ["Using demo fallback"],
+  model_version: "v1.0.0",
+  feature_version: "v3",
+  trained_on: "2025-10 to 2026-01",
+  data_last_updated: "2026-02-18T00:00:00Z",
+  inventory_snapshot: "2026-02-18T06:00:00Z",
+  model_last_trained: "2026-02-17T22:00:00Z",
+  response_time_ms: 12,
   workflow_id: "",
   plan_id: "PLAN_001",
   context_id: "CTX_001",
@@ -148,6 +156,7 @@ const EMPTY_WORKFLOW: WorkflowState = {
   alerts: [],
   next_action: null,
   system_health: null,
+  executive_summary: null,
 };
 
 export async function startWorkflow(request?: WorkflowStartRequest): Promise<WorkflowState> {
