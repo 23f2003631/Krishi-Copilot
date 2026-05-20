@@ -20,8 +20,8 @@ import {
   scenariosResponse
 } from "@/data/mock-data";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
-const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
 function withCachedWarning<T>(fallback: T): T {
   if (typeof fallback !== "object" || fallback === null) {
@@ -31,12 +31,12 @@ function withCachedWarning<T>(fallback: T): T {
   const existingWarnings = Array.isArray(envelope.warnings) ? envelope.warnings : [];
   return {
     ...envelope,
-    warnings: Array.from(new Set([...existingWarnings, "Using cached demo output"]))
+    warnings: Array.from(new Set([...existingWarnings, "Backend unavailable; showing cached fallback"]))
   };
 }
 
 async function fetchOrFallback<T>(path: string, fallback: T, init?: RequestInit): Promise<T> {
-  if (!API_BASE || DEMO_MODE) {
+  if (DEMO_MODE) {
     return withCachedWarning(fallback);
   }
 
@@ -56,6 +56,13 @@ async function fetchOrFallback<T>(path: string, fallback: T, init?: RequestInit)
   } catch {
     return withCachedWarning(fallback);
   }
+}
+
+export function resolveDownloadUrl(downloadUrl: string): string {
+  if (downloadUrl.startsWith("http://") || downloadUrl.startsWith("https://")) {
+    return downloadUrl;
+  }
+  return `${API_BASE}${downloadUrl.startsWith("/") ? downloadUrl : `/${downloadUrl}`}`;
 }
 
 export function fetchScenarios(): Promise<ScenarioResponse> {

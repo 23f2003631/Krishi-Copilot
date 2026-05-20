@@ -101,6 +101,7 @@ class WorkflowOrchestrator:
             "recommendations": rec_list,
             "content_variants": content_variants,
             "events": events,
+            "context": context,
         }
         kpis = compute_kpis(request.role, intermediate_state)
 
@@ -118,7 +119,7 @@ class WorkflowOrchestrator:
             "schema_version": "syngenta-copilot.v1",
             "request_id": f"req_{uuid.uuid4().hex[:8]}",
             "generated_at": datetime.now(timezone.utc).isoformat(),
-            "source_mode": recommendations.get("source_mode", "cached_demo"),
+            "source_mode": recommendations.get("source_mode", "hybrid"),
             "warnings": [*context.get("warnings", []), *warnings],
             "model_version": recommendations.get("model_version"),
             "trained_on": recommendations.get("trained_on"),
@@ -145,6 +146,7 @@ class WorkflowOrchestrator:
         _active_workflows[workflow_id] = workflow_state
         # Also index by plan_id for backward compatibility
         _active_workflows[plan_id] = workflow_state
+        workflow_state["system_health"] = self._build_system_health(content)
         logger.info("Workflow %s: complete. plan_id=%s, context_id=%s", workflow_id, plan_id, context_id)
 
         return workflow_state
@@ -167,18 +169,22 @@ class WorkflowOrchestrator:
             "recommendations": state.get("recommendations", []) if state else [],
             "content_variants": state.get("content_variants", []) if state else [],
             "events": state.get("events", []) if state else [],
+            "context": state.get("context") if state else None,
         })
 
     def get_operational_events(self, role: str, workflow_id: str | None = None) -> list[dict]:
         """Get operational events for a role, optionally scoped to a workflow."""
         state = _active_workflows.get(workflow_id) if workflow_id else None
+        if state is None and _active_workflows:
+            latest = next(reversed(_active_workflows.values()))
+            state = latest
         context = state.get("context") if state else None
         return generate_operational_events(role, context, state)
 
     def _build_system_health(self, content: dict | None = None) -> dict:
         """Build system health snapshot."""
         gemini_status = "active" if settings.llm_enabled else "disabled"
-        supabase_status = "connected" if settings.supabase_enabled else "unavailable"
+        supabase_status = "connected" if settings.data_mode == "supabase" and settings.supabase_enabled else "not_used"
         last_source = "unknown"
         if content and content.get("variants"):
             last_source = content["variants"][0].get("generation_source", "unknown")
@@ -186,7 +192,7 @@ class WorkflowOrchestrator:
         return {
             "gemini": gemini_status,
             "supabase": supabase_status,
-            "cache": "disabled" if not settings.demo_cache_enabled else "enabled",
+            "cache": "enabled" if settings.demo_cache_enabled else "disabled",
             "data_mode": settings.data_mode,
             "active_workflows": len(set(v.get("workflow_id") for v in _active_workflows.values())),
             "last_generation_source": last_source,

@@ -2,6 +2,8 @@ import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { fetchAnalyticsSummary, fetchFieldActions, fetchRecommendations, fetchScenarios, startWorkflow } from "@/services/api";
 import { PlannerClient } from "@/components/dashboard/planner-client";
 
+export const dynamic = "force-dynamic";
+
 export default async function PlannerPage() {
   // Bootstrap workflow via the orchestrator (creates all entities with real IDs)
   const workflowState = await startWorkflow();

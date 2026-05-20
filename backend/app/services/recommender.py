@@ -248,7 +248,8 @@ def build_recommendations(context_id: str) -> dict:
     response["model_last_trained"] = metadata.get("model_last_trained", "unknown")
 
     # Resolve the crop associated with this context
-    crop = _context_crop_map.get(context_id, "wheat")
+    context_crop = response.get("context", {}).get("crop")
+    crop = _context_crop_map.get(context_id, context_crop or "wheat")
     context_data = response.get("context", {})
     geography_district = context_data.get("geography", {}).get("district", "Kanpur Nagar")
 
@@ -449,12 +450,14 @@ def _build_context_from_recommendation(rec: dict, response: dict) -> dict:
     """Construct a context dict from recommendation data for scoring."""
     crop = rec.get("crop", "wheat")
     product = rec.get("product", "")
+    response_context = response.get("context", {}) or {}
+    inventory_alerts = response_context.get("inventory_alerts")
 
     return {
-        "crop_stage": CROP_STAGE_MAP.get(crop, {"stage": "unknown", "days_to_stage": 99, "confidence": 0.5}),
+        "crop_stage": response_context.get("crop_stage") or CROP_STAGE_MAP.get(crop, {"stage": "unknown", "days_to_stage": 99, "confidence": 0.5}),
         "weather_insights": _get_weather_for_context(response.get("context_id", "")),
         "grower_summary": _get_grower_summary_for_context(response.get("context_id", "")),
-        "inventory_alerts": INVENTORY_MAP.get(product, [{"product": product, "stock_status": "healthy", "stock_cover_days": 15, "affected_retailers": 3}]),
+        "inventory_alerts": inventory_alerts or INVENTORY_MAP.get(product, [{"product": product, "stock_status": "healthy", "stock_cover_days": 15, "affected_retailers": 3}]),
     }
 
 

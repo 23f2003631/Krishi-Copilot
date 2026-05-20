@@ -128,6 +128,7 @@ class ExpectedImpact(BaseModel):
 
 class Recommendation(BaseModel):
     recommendation_id: str
+    plan_id: str | None = None
     priority_score: int = Field(ge=0, le=100)
     segment_label: str
     target_count: int = Field(ge=0)

@@ -1,10 +1,11 @@
 "use client";
 
-import { AlertTriangle, Info, CloudLightning, ShieldAlert, X, Clock } from "lucide-react";
+import { AlertTriangle, Info, X, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/lib/contexts/RoleContext";
 import { useState, useEffect } from "react";
 import type { OperationalEvent } from "@/types/workflow";
+import { fetchOperationalEvents } from "@/services/api";
 
 interface OperationalAlertBannerProps {
   className?: string;
@@ -14,18 +15,31 @@ interface OperationalAlertBannerProps {
 export function OperationalAlertBanner({ className, alerts }: OperationalAlertBannerProps) {
   const { role } = useRole();
   const [dismissed, setDismissed] = useState(false);
+  const [liveAlerts, setLiveAlerts] = useState<OperationalEvent[]>(alerts || []);
 
   // Reset dismissed state when role or alerts change
   useEffect(() => {
     setDismissed(false);
   }, [role, alerts]);
 
+  useEffect(() => {
+    if (alerts?.length) {
+      setLiveAlerts(alerts);
+      return;
+    }
+    const roleKey = role.toLowerCase().replace(/ /g, "_");
+    const workflowId = typeof window !== "undefined" ? localStorage.getItem("syngenta_workflow_id") || undefined : undefined;
+    fetchOperationalEvents(roleKey, workflowId)
+      .then((data) => setLiveAlerts(data.events || []))
+      .catch(() => setLiveAlerts([]));
+  }, [alerts, role]);
+
   if (dismissed) return null;
 
   let alertContent = null;
 
-  if (alerts && alerts.length > 0) {
-    const primaryAlert = alerts[0];
+  if (liveAlerts && liveAlerts.length > 0) {
+    const primaryAlert = liveAlerts[0];
     const isWarning = primaryAlert.severity === "high" || primaryAlert.severity === "medium";
     
     let Icon = Info;
@@ -48,50 +62,6 @@ export function OperationalAlertBanner({ className, alerts }: OperationalAlertBa
       message: primaryAlert.text,
       time: primaryAlert.time || "Just now"
     };
-  } else {
-    // Fallback to static alerts
-    switch (role) {
-      case "Campaign Manager":
-        alertContent = {
-          icon: Info,
-          style: "bg-blue-50 text-blue-900 border-blue-200",
-          iconStyle: "text-blue-600",
-          pulseColor: "bg-blue-500",
-          message: "3 campaigns are awaiting your approval for deployment tomorrow.",
-          time: "Updated 2m ago"
-        };
-        break;
-      case "Territory Manager":
-        alertContent = {
-          icon: CloudLightning,
-          style: "bg-amber-50 text-amber-900 border-amber-200",
-          iconStyle: "text-amber-600",
-          pulseColor: "bg-amber-500 animate-pulse",
-          message: "High pest risk detected in Maharashtra. 2 campaigns blocked.",
-          time: "Detected 8m ago"
-        };
-        break;
-      case "Field Representative":
-        alertContent = {
-          icon: AlertTriangle,
-          style: "bg-orange-50 text-orange-900 border-orange-200",
-          iconStyle: "text-orange-600",
-          pulseColor: "bg-orange-500 animate-pulse",
-          message: "You have 5 high-priority grower visits overdue.",
-          time: "Queue updated 5m ago"
-        };
-        break;
-      case "Retailer Support":
-        alertContent = {
-          icon: ShieldAlert,
-          style: "bg-rose-50 text-rose-900 border-rose-200",
-          iconStyle: "text-rose-600",
-          pulseColor: "bg-rose-500 animate-pulse",
-          message: "Critical stockout: Tilt 250 EC in Kanpur Nagar. Escalation required.",
-          time: "Escalated 1m ago"
-        };
-        break;
-    }
   }
 
   if (!alertContent) return null;

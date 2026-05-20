@@ -1,7 +1,10 @@
+"use client";
+
 import { CheckCircle2, FileText, Mic, MessageCircle, Palette, Smartphone } from "lucide-react";
 import type { ContentVariant } from "@/types/contracts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { approveContent } from "@/services/api";
 
 const icons = {
   whatsapp: MessageCircle,
@@ -11,8 +14,14 @@ const icons = {
   visual_concept: Palette
 };
 
-export function ContentPreviewCard({ variant }: { variant: ContentVariant }) {
+export function ContentPreviewCard({ variant, onApproved }: { variant: ContentVariant; onApproved?: (variant: ContentVariant) => void }) {
   const Icon = icons[variant.format];
+  const approved = variant.approval_state === "approved";
+
+  async function approveVariant() {
+    const response = await approveContent(variant.content_id, "approved", "campaign_manager");
+    onApproved?.({ ...variant, approval_state: response.approval_state });
+  }
 
   return (
     <article className="rounded-[22px] border border-border bg-card-soft p-4">
@@ -26,7 +35,7 @@ export function ContentPreviewCard({ variant }: { variant: ContentVariant }) {
             <p className="text-xs text-muted">{variant.language}</p>
           </div>
         </div>
-        <Badge variant="warning">{variant.approval_state.replace("_", " ")}</Badge>
+        <Badge variant={approved ? "success" : "warning"}>{variant.approval_state.replace("_", " ")}</Badge>
       </div>
       <p className="mt-4 min-h-[112px] rounded-[18px] border border-border bg-white p-4 text-sm leading-6 text-foreground">{variant.text}</p>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -34,9 +43,9 @@ export function ContentPreviewCard({ variant }: { variant: ContentVariant }) {
           <Badge variant={variant.safety_flags.length ? "danger" : "success"}>{variant.safety_flags.length ? "Safety review" : "No safety flags"}</Badge>
           {variant.estimated_read_time_sec ? <Badge variant="soft">{variant.estimated_read_time_sec}s read</Badge> : null}
         </div>
-        <Button variant="secondary" size="sm">
+        <Button variant={approved ? "default" : "secondary"} size="sm" onClick={approveVariant} disabled={approved}>
           <CheckCircle2 className="h-4 w-4" />
-          Approve
+          {approved ? "Approved" : "Approve"}
         </Button>
       </div>
     </article>

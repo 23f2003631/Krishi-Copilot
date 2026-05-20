@@ -3,14 +3,16 @@ import type { Scenario } from "@/types/contracts";
 import { DashboardCard } from "@/components/dashboard/dashboard-card";
 import { SectionHeader } from "@/components/dashboard/section-header";
 
-const priorities = [
-  { label: "Pre-Sowing Awareness", value: 42 },
-  { label: "Yield Protection Expo", value: 78 },
-  { label: "Post-Harvest Support", value: 15 },
-];
-
 export function CampaignPriorityCard({ scenarios }: { scenarios: Scenario[] }) {
   const activeScenario = scenarios[0];
+  const priorities = (scenarios.length ? scenarios : []).slice(0, 3).map((scenario) => {
+    const riskScore = scenario.risk_level === "high" ? 88 : scenario.risk_level === "medium" ? 64 : 42;
+    const stockAdjustment = scenario.stock_status === "healthy" ? 8 : scenario.stock_status === "watch" ? 0 : -18;
+    return {
+      label: scenario.name,
+      value: Math.max(10, Math.min(100, riskScore + stockAdjustment)),
+    };
+  });
 
   return (
     <DashboardCard className="min-h-[300px]">
@@ -31,6 +33,11 @@ export function CampaignPriorityCard({ scenarios }: { scenarios: Scenario[] }) {
             </div>
           </div>
         ))}
+        {!priorities.length && (
+          <div className="rounded-[16px] border border-dashed border-[#0B5B34]/15 p-4 text-[13px] text-[#5D6B62]">
+            No live campaign windows returned by the API.
+          </div>
+        )}
       </div>
     </DashboardCard>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, CalendarClock, UserRoundCheck, AlertTriangle, ShieldCheck } from "lucide-react";
 import type { Recommendation } from "@/types/contracts";
@@ -96,9 +97,17 @@ export function RecommendationCard({ recommendation }: { recommendation: Recomme
               </span>
             </div>
           )}
-          <Button variant={recommendation.blocked ? "secondary" : "default"} size="sm">
-            {recommendation.blocked ? "Review stock" : "Use recommendation"}
-            <ArrowRight className="h-4 w-4" />
+          <Button asChild variant={recommendation.blocked ? "secondary" : "default"} size="sm">
+            <Link
+              href={
+                recommendation.blocked
+                  ? `/field-actions?plan_id=${(recommendation as any).plan_id ?? "PLAN_001"}#retailer-alerts`
+                  : `/content-studio?plan_id=${(recommendation as any).plan_id ?? "PLAN_001"}&recommendation_id=${recommendation.recommendation_id}`
+              }
+            >
+              {recommendation.blocked ? "Review stock" : "Use recommendation"}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </div>
