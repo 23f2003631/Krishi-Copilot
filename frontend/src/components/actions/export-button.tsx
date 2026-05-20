@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from "react";
 import { Download } from "lucide-react";
-import { exportPlan } from "@/services/api";
+import { exportPlan, resolveDownloadUrl } from "@/services/api";
 import { Button } from "@/components/ui/button";
 
 export function ExportButton({ label, planId, type }: { label: string; planId: string; type: "csv" | "rep_brief" | "whatsapp_pack" }) {
@@ -18,8 +18,15 @@ export function ExportButton({ label, planId, type }: { label: string; planId: s
   function handleExport() {
     startTransition(async () => {
       const response = await exportPlan(planId, type);
-      setDownloadUrl(response.download_url);
-      localStorage.setItem(`syngenta_export_${type}`, response.download_url);
+      const resolvedUrl = resolveDownloadUrl(response.download_url);
+      setDownloadUrl(resolvedUrl);
+      localStorage.setItem(`syngenta_export_${type}`, resolvedUrl);
+      const link = document.createElement("a");
+      link.href = resolvedUrl;
+      link.download = "";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
       setTimeout(() => setDownloadUrl(null), 4000);
     });
   }
