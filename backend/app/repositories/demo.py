@@ -41,6 +41,17 @@ class DemoRepository:
         return context
 
     def create_recommendations(self, context_id: str) -> dict:
+        if context_id == "CTX_EMPTY" or "empty" in context_id.lower():
+            return {
+                "schema_version": "syngenta-copilot.v1",
+                "plan_id": "PLAN_EMPTY",
+                "context_id": context_id,
+                "source_mode": "cached_demo",
+                "recommendations": [],
+                "warnings": ["Forced empty state for QA verification"],
+                "model_version": "v1.0.0",
+                "feature_version": "v3"
+            }
         response = get_payload("recommendations")
         response["context_id"] = context_id
         return response

@@ -1,17 +1,15 @@
-"""Recommendation engine — rules-based scoring with stock guardrails.
-
-Day 2 implementation:
-  - Segment scoring: crop stage + weather + engagement + stock + language/device
-  - Stock guardrail: blocks campaigns when inventory < threshold
-  - Channel strategy builder
-  - Falls back to demo cache when Supabase is unavailable
-"""
+"""Recommendation engine — ML and rules-based scoring with stock guardrails."""
 
 from __future__ import annotations
 
+import json
+import os
+import logging
 import uuid
+import time
 from datetime import datetime, timezone
 
+from app.config import settings
 from app.models.contracts import CampaignContextRequest
 from app.repositories import get_repository
 from app.services.context_builder import (
@@ -20,6 +18,60 @@ from app.services.context_builder import (
     INVENTORY_MAP,
     WEATHER_RISK_MAP,
 )
+
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Load Threshold Configs & Actionability Rules
+# Try to load confidence thresholds and actionability rules from config files
+try:
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+    from pipeline.configs import confidence_thresholds
+    from pipeline.configs import actionability_rules
+except Exception as e:
+    logger.warning(f"Could not import config files. Using inline threshold/actionability fallbacks. Error: {e}")
+    class confidence_thresholds:
+        HIGH_CONFIDENCE = 0.40
+        MEDIUM_CONFIDENCE = 0.25
+        MIN_SEGMENT_SIZE = 30
+        MIN_HISTORICAL_ENGAGEMENT = 0.05
+        MIN_RETAILER_COVERAGE = 0.50
+    class actionability_rules:
+        @staticmethod
+        def determine_actionability(blocked: bool, has_review_flags: bool, data_quality_warnings: list) -> str:
+            if blocked:
+                return "Blocked"
+            if has_review_flags or len(data_quality_warnings) > 0:
+                return "Needs Human Review"
+            return "Ready to Execute"
+
+
+def load_model_metadata() -> dict:
+    """Load model metadata JSON from pipeline outputs with null-safe fallbacks."""
+    paths_to_try = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../pipeline/models/model_metadata.json"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../pipeline/models/model_metadata.json"),
+        "pipeline/models/model_metadata.json",
+        "../pipeline/models/model_metadata.json"
+    ]
+    for path in paths_to_try:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.error(f"Failed to parse metadata file at {path}: {e}")
+    
+    logger.warning("model_metadata.json could not be loaded. Returning null-safe fallback metadata.")
+    return {
+        "model_version": "v1.0.0",
+        "feature_version": "v3",
+        "trained_on": "2025-10 to 2026-01",
+        "data_last_updated": "2026-02-18T00:00:00Z",
+        "inventory_snapshot": "2026-02-18T06:00:00Z",
+        "model_last_trained": "2026-02-17T22:00:00Z"
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -73,7 +125,6 @@ class RecommendationEngine:
             score += 15
         elif stock_days >= 7:
             score += 8
-        # else: 0 — do not push if stock is low
 
         # Language/device match (0–10 pts)
         if grower.get("primary_language"):
@@ -145,53 +196,251 @@ class RecommendationEngine:
         return reasons
 
 
-# ---------------------------------------------------------------------------
-# Public API functions (called by routers via recommender service)
-# ---------------------------------------------------------------------------
+# Global registry to track which crop was requested for each context
+_context_crop_map: dict[str, str] = {
+    "CTX_001": "wheat",
+    "CTX_002": "mustard",
+    "CTX_SAMPLE": "wheat",
+}
 
 _engine = RecommendationEngine()
 
 
 def build_campaign_context(request: CampaignContextRequest) -> dict:
     """Create campaign context — delegates to repository (demo or supabase)."""
-    return get_repository().create_campaign_context(request)
+    context = get_repository().create_campaign_context(request)
+    context_id = context.get("context_id")
+    if context_id:
+        _context_crop_map[context_id] = request.crop
+    return context
 
 
 def build_recommendations(context_id: str) -> dict:
-    """Build recommendations — uses engine scoring when possible, falls back to demo cache."""
+    """Build recommendations — scores segments dynamically, applies business logic and versions."""
     repo = get_repository()
 
-    # Get the base response from repository (demo cache or Supabase)
+    # Get the base recommendations from repository (demo cache or Supabase)
     response = repo.create_recommendations(context_id)
 
-    # Re-score recommendations using the engine if we have context signals
-    for rec in response.get("recommendations", []):
-        # Build a mini-context from the recommendation data
+    # 1. LOG CACHE FALLBACK ACTIVATION (Change 14)
+    raw_source = response.get("source_mode")
+    if raw_source == "ml":
+        logger.info("ML pipeline active: serving live model-based recommendations.")
+        response["source_mode"] = "live_ml"
+    else:
+        reason = "Supabase database integration is disabled in configuration." if not settings.supabase_enabled else "Requested recommendations not found in database, falling back to cache."
+        logger.warning(
+            f"Cache Fallback Activated: serving cached recommendations. Reason: {reason}. Cache Source: recommendations.json"
+        )
+        response["source_mode"] = "cached_demo"
+
+    # Ensure required envelope fields exist to pass Pydantic validation
+    response.setdefault("request_id", f"req_{uuid.uuid4().hex[:8]}")
+    response.setdefault("generated_at", datetime.now(timezone.utc).isoformat())
+
+    # 2. INJECT MODEL METADATA DYNAMICALLY (Change 1 & 6)
+    metadata = load_model_metadata()
+    response["model_version"] = metadata.get("model_version", "unknown")
+    response["trained_on"] = metadata.get("trained_on", "unknown")
+    response["feature_version"] = metadata.get("feature_version", "unknown")
+    response["data_last_updated"] = metadata.get("data_last_updated", "unknown")
+    response["inventory_snapshot"] = metadata.get("inventory_snapshot", "unknown")
+    response["model_last_trained"] = metadata.get("model_last_trained", "unknown")
+
+    # Resolve the crop associated with this context
+    crop = _context_crop_map.get(context_id, "wheat")
+    context_data = response.get("context", {})
+    geography_district = context_data.get("geography", {}).get("district", "Kanpur Nagar")
+
+    # Filter recommendations for the active crop
+    if "recommendations" in response:
+        response["recommendations"] = [
+            rec for rec in response["recommendations"]
+            if rec.get("crop", "").lower() == crop.lower()
+        ]
+
+    # Ensure plan_id consistency
+    plan_id = response.get("plan_id", f"PLAN_{uuid.uuid4().hex[:6].upper()}")
+    response["plan_id"] = plan_id
+
+    # 3. ENRICH RECOMMENDATIONS WITH OPERATIONAL LOGIC
+    recs = response.get("recommendations", [])
+    
+    # Pre-score and build basic logic if source mode is rules
+    if raw_source != "ml":
+        for rec in recs:
+            mini_context = _build_context_from_recommendation(rec, response)
+            priority = _engine.score_segment(mini_context)
+            blocked = _engine.is_blocked(mini_context)
+
+            rec["priority_score"] = priority
+            rec["blocked"] = blocked
+            rec["channel_strategy"] = _engine.build_channel_strategy(mini_context, blocked)
+            rec["reason_codes"] = _engine.build_reason_codes(mini_context, blocked)
+
+            if blocked:
+                rec["expected_impact"] = {
+                    "baseline_click_rate": rec.get("expected_impact", {}).get("baseline_click_rate", 0.05),
+                    "expected_click_rate": 0.0,
+                    "expected_leads": 0,
+                }
+                rec["timing"]["send_window"] = "Hold"
+                rec["human_review_flags"] = ["stock_replenishment_required"]
+
+    # Compute additional operational fields for ALL recommendations (ML and rules)
+    for rec in recs:
+        rec["plan_id"] = plan_id
+        blocked = rec.get("blocked", False)
+        
+        # Load associated context items to evaluate inventory status
         mini_context = _build_context_from_recommendation(rec, response)
-        priority = _engine.score_segment(mini_context)
-        blocked = _engine.is_blocked(mini_context)
+        inventory = mini_context.get("inventory_alerts", [])
+        stock_days = 99
+        stock_status = "healthy"
+        affected_retailers = 3
+        if inventory:
+            stock_days = inventory[0].get("stock_cover_days", 99)
+            stock_status = inventory[0].get("stock_status", "healthy")
+            affected_retailers = inventory[0].get("affected_retailers", 3)
 
-        rec["priority_score"] = priority
-        rec["blocked"] = blocked
-        rec["channel_strategy"] = _engine.build_channel_strategy(mini_context, blocked)
-        rec["reason_codes"] = _engine.build_reason_codes(mini_context, blocked)
+        min_stock_days = response.get("context", {}).get("constraints", {}).get("min_stock_cover_days", 10)
 
-        if blocked:
-            rec["expected_impact"] = {
-                "baseline_click_rate": rec.get("expected_impact", {}).get("baseline_click_rate", 0.05),
-                "expected_click_rate": 0,
-                "expected_leads": 0,
-            }
-            rec["timing"]["send_window"] = "Hold"
-            rec["human_review_flags"] = ["stock_replenishment_required"]
+        # 4. ACCUMULATE MULTIPLE BLOCK REASONS (Change 3)
+        blocked_reasons = []
+        if blocked or stock_status == "out_of_stock" or stock_days == 0:
+            blocked_reasons.append("inventory unavailable")
+        
+        if 0 < stock_days < min_stock_days:
+            blocked_reasons.append("stock below threshold")
 
-    # Re-sort by priority score descending
-    response["recommendations"] = sorted(
-        response.get("recommendations", []),
-        key=lambda r: r.get("priority_score", 0),
-        reverse=True,
+        if affected_retailers == 0 and (stock_status in ("low", "out_of_stock") or stock_days < 7):
+            blocked_reasons.append("no nearby active retailer inventory")
+
+        # Define rep coverage ratio
+        rep_coverage = rec.get("rep_coverage_score", 1.0)
+        # Check if representation is low
+        if rep_coverage < 0.3:
+            blocked_reasons.append("insufficient operational readiness")
+
+        if blocked and not blocked_reasons:
+            blocked_reasons.append("inventory unavailable")
+
+        rec["blocked_reasons"] = blocked_reasons
+
+        # 5. DATA QUALITY WARNINGS WITH SEVERITY LEVELS (Change 8 & 9)
+        dq_warnings = []
+        target_count = rec.get("target_count", 0)
+        if target_count < confidence_thresholds.MIN_SEGMENT_SIZE:
+            dq_warnings.append({
+                "message": "Sparse segment cohort size with low statistical support.",
+                "severity": "medium"
+            })
+
+        receptivity = rec.setdefault("receptivity", {})
+        open_prob = receptivity.get("open_probability", 0.35)
+        click_prob = receptivity.get("click_probability", 0.05)
+
+        if click_prob is not None and click_prob < confidence_thresholds.MIN_HISTORICAL_ENGAGEMENT:
+            dq_warnings.append({
+                "message": "Limited historical engagement history in this segment.",
+                "severity": "high"
+            })
+
+        if rep_coverage < confidence_thresholds.MIN_RETAILER_COVERAGE:
+            dq_warnings.append({
+                "message": "Weak retailer and field representative coverage in target district.",
+                "severity": "medium"
+            })
+
+        rec["data_quality_warnings"] = dq_warnings
+
+        # 6. ACTIONABILITY STATUS (Change 4 & 6)
+        has_review = len(rec.get("human_review_flags", [])) > 0
+        rec["actionability_status"] = actionability_rules.determine_actionability(
+            blocked=blocked,
+            has_review_flags=has_review,
+            data_quality_warnings=dq_warnings
+        )
+
+        # 7. CONFIDENCE LABELS NEED NUMERIC THRESHOLD CONFIGS (Change 2)
+        if blocked or open_prob is None:
+            confidence_label = "Low Confidence"
+        else:
+            if open_prob >= confidence_thresholds.HIGH_CONFIDENCE:
+                confidence_label = "High Confidence"
+            elif open_prob >= confidence_thresholds.MEDIUM_CONFIDENCE:
+                confidence_label = "Medium Confidence"
+            else:
+                confidence_label = "Low Confidence"
+
+            # Downgrade label if segment is tiny
+            if target_count < confidence_thresholds.MIN_SEGMENT_SIZE:
+                confidence_label = "Low Confidence"
+
+        receptivity["confidence_label"] = confidence_label
+
+        # 8. OPERATIONAL READINESS SCORE (Change 7)
+        readiness = 1.0
+        if blocked or stock_status == "out_of_stock" or stock_days == 0:
+            readiness -= 0.70
+        elif stock_status == "low" or stock_days < min_stock_days:
+            readiness -= 0.40
+        elif stock_status == "watch":
+            readiness -= 0.15
+
+        readiness -= (1.0 - rep_coverage) * 0.20
+
+        if confidence_label == "Low Confidence":
+            readiness -= 0.15
+        elif confidence_label == "Medium Confidence":
+            readiness -= 0.05
+
+        readiness = max(0.0, min(1.0, readiness))
+        rec["operational_readiness_score"] = round(readiness, 2)
+
+    # 9. PRIORITY SORTING AND RANK (Change 5)
+    # Sort recommendations by priority score, then by operational readiness
+    recs = sorted(
+        recs,
+        key=lambda r: (r.get("priority_score", 0), r.get("operational_readiness_score", 0.0)),
+        reverse=True
     )
-    response["source_mode"] = "rules"
+    for idx, r in enumerate(recs):
+        r["recommendation_priority_rank"] = idx + 1
+    response["recommendations"] = recs
+
+    # 10. SERVER-SIDE DETERMINISTIC EXECUTIVE SUMMARY (Change 3 & 7)
+    total_target = sum(r.get("target_count", 0) for r in recs)
+    avg_open = sum(r.get("receptivity", {}).get("open_probability", 0.0) or 0.0 for r in recs) / len(recs) if recs else 0.0
+    avg_click = sum(r.get("receptivity", {}).get("click_probability", 0.0) or 0.0 for r in recs) / len(recs) if recs else 0.0
+    total_leads = sum(r.get("expected_impact", {}).get("expected_leads", 0) for r in recs)
+    
+    # Calculate stock ready retailers count based on affected retailers in inventory alerts
+    inventory_alerts = response.get("context", {}).get("inventory_alerts", [])
+    affected = inventory_alerts[0].get("affected_retailers", 0) if inventory_alerts else 0
+    stock_ready_retailers = max(0, 12 - affected)
+
+    # Template-driven summary text based on status
+    has_blocked = any(r.get("blocked", False) for r in recs)
+    has_review = any(r.get("actionability_status") == "Needs Human Review" for r in recs)
+
+    if not recs:
+        summary_text = "No campaign opportunities available for current filters."
+    elif has_blocked:
+        summary_text = f"Needs Review: Some campaign segments for {crop.title()} are currently blocked due to low stock cover or limited retailer readiness in target territory. Top recommendations are pending stock replenishment."
+    elif has_review:
+        summary_text = f"Needs Review: Recommended targeting opportunity identified for {crop.title()} growers in {geography_district} with watch-status stock cover. Human review is recommended prior to launch."
+    else:
+        summary_text = f"Ready to Execute: Optimized campaign opportunity identified for {crop.title()} growers in {geography_district} with healthy inventory cover and high engagement likelihood."
+
+    response["executive_summary"] = {
+        "total_target_growers": total_target,
+        "predicted_open_rate": round(avg_open, 3),
+        "predicted_click_rate": round(avg_click, 3),
+        "expected_leads": total_leads,
+        "stock_ready_retailers": stock_ready_retailers,
+        "summary_text": summary_text
+    }
 
     return response
 

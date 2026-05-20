@@ -8,7 +8,8 @@ GET  /operational-events           → Get polling-based operational intelligenc
 GET  /system/health                → System health snapshot
 """
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
+import time
 
 from app.models.contracts import WorkflowStartRequest
 from app.services.workflow import (
@@ -24,18 +25,28 @@ router = APIRouter()
 
 
 @router.post("/workflow/start")
-def create_workflow(request: WorkflowStartRequest):
+def create_workflow(request: Request, body: WorkflowStartRequest):
     """Bootstrap a complete workflow entity chain with runtime UUIDs."""
-    return start_workflow(request)
+    res = start_workflow(body)
+    start_time = getattr(request.state, "start_time", None)
+    if start_time:
+        res["response_time_ms"] = int((time.perf_counter() - start_time) * 1000)
+    return res
 
 
 @router.get("/workflow/{workflow_id}")
-def read_workflow(workflow_id: str):
+def read_workflow(request: Request, workflow_id: str):
     """Get the complete state of a workflow."""
     state = get_workflow_state(workflow_id)
     if not state:
         raise HTTPException(status_code=404, detail=f"Workflow {workflow_id} not found")
-    return state
+    
+    # Return a copy with dynamic request timing
+    state_dict = dict(state)
+    start_time = getattr(request.state, "start_time", None)
+    if start_time:
+        state_dict["response_time_ms"] = int((time.perf_counter() - start_time) * 1000)
+    return state_dict
 
 
 @router.get("/workflow/{workflow_id}/events")

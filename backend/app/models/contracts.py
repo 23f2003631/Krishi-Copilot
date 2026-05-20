@@ -50,8 +50,15 @@ class ApiEnvelope(BaseModel):
     schema_version: str = "syngenta-copilot.v1"
     request_id: str
     generated_at: str
-    source_mode: SourceMode
+    source_mode: str | None = None
     warnings: list[str] = []
+    model_version: str | None = None
+    trained_on: str | None = None
+    feature_version: str | None = None
+    data_last_updated: str | None = None
+    inventory_snapshot: str | None = None
+    model_last_trained: str | None = None
+    response_time_ms: int | None = None
 
 
 class CropStage(BaseModel):
@@ -90,9 +97,15 @@ class CampaignContextResponse(ApiEnvelope):
 
 
 class Receptivity(BaseModel):
-    open_probability: float = Field(ge=0, le=1)
-    click_probability: float = Field(ge=0, le=1)
-    confidence: float = Field(ge=0, le=1)
+    open_probability: float | None = Field(default=None, ge=0, le=1)
+    click_probability: float | None = Field(default=None, ge=0, le=1)
+    confidence: float | None = Field(default=None, ge=0, le=1)
+    confidence_label: str | None = None
+
+
+class DataQualityWarning(BaseModel):
+    message: str
+    severity: Literal["low", "medium", "high"]
 
 
 class ChannelStrategy(BaseModel):
@@ -127,12 +140,27 @@ class Recommendation(BaseModel):
     reason_codes: list[str]
     human_review_flags: list[str]
     blocked: bool = False
+    blocked_reasons: list[str] = []
+    actionability_status: str | None = None
+    data_quality_warnings: list[DataQualityWarning] = []
+    operational_readiness_score: float | None = None
+    recommendation_priority_rank: int | None = None
+
+
+class ExecutiveSummary(BaseModel):
+    total_target_growers: int
+    predicted_open_rate: float
+    predicted_click_rate: float
+    expected_leads: int
+    stock_ready_retailers: int
+    summary_text: str
 
 
 class RecommendationResponse(ApiEnvelope):
     plan_id: str
     context_id: str
     recommendations: list[Recommendation]
+    executive_summary: ExecutiveSummary | None = None
 
 
 class ContentGenerationRequest(BaseModel):
@@ -321,4 +349,5 @@ class WorkflowState(ApiEnvelope):
     alerts: list[OperationalEvent] = []
     next_action: NextBestAction | None = None
     system_health: SystemHealth | None = None
+    executive_summary: ExecutiveSummary | None = None
 
