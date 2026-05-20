@@ -50,6 +50,7 @@ export function PlannerForm({ scenarios }: { scenarios: Scenario[] }) {
         ...request,
         role: "campaign_manager"
       });
+      localStorage.setItem("syngenta_workflow_id", response.workflow_id);
       localStorage.setItem("syngenta_context_id", response.context_id);
       localStorage.setItem("syngenta_plan_id", response.plan_id || "PLAN_001");
       localStorage.setItem("syngenta_scenario_id", selected.scenario_id);
