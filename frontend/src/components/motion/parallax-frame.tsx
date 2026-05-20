@@ -24,21 +24,23 @@ export function ParallaxFrame({ children, className, depth = "soft", disabled = 
       return;
     }
 
-    const strength = depth === "hero" ? 1 : 0.55;
-    const rotateXTo = gsap.quickTo(frame, "rotationX", { duration: 1.1, ease: "power3.out" });
-    const rotateYTo = gsap.quickTo(frame, "rotationY", { duration: 1.1, ease: "power3.out" });
-    const xTo = gsap.quickTo(frame, "x", { duration: 1.2, ease: "power3.out" });
-    const yTo = gsap.quickTo(frame, "y", { duration: 1.2, ease: "power3.out" });
+    const strength = depth === "hero" ? 1.5 : 0.8;
+    const rotateXTo = gsap.quickTo(frame, "rotationX", { duration: 0.8, ease: "power2.out" });
+    const rotateYTo = gsap.quickTo(frame, "rotationY", { duration: 0.8, ease: "power2.out" });
+    const xTo = gsap.quickTo(frame, "x", { duration: 0.8, ease: "power2.out" });
+    const yTo = gsap.quickTo(frame, "y", { duration: 0.8, ease: "power2.out" });
+    const scaleTo = gsap.quickTo(frame, "scale", { duration: 0.8, ease: "power2.out" });
 
     const onPointerMove = (event: PointerEvent) => {
       const rect = root.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
 
-      rotateXTo(y * -3 * strength);
-      rotateYTo(x * 4 * strength);
-      xTo(x * 12 * strength);
-      yTo(y * 8 * strength);
+      rotateXTo(y * -16 * strength);
+      rotateYTo(x * 20 * strength);
+      xTo(x * 24 * strength);
+      yTo(y * 16 * strength);
+      scaleTo(depth === "hero" ? 1.03 : 1.01);
     };
 
     const onPointerLeave = () => {
@@ -46,6 +48,7 @@ export function ParallaxFrame({ children, className, depth = "soft", disabled = 
       rotateYTo(0);
       xTo(0);
       yTo(0);
+      scaleTo(1);
     };
 
     root.addEventListener("pointermove", onPointerMove);
@@ -58,7 +61,7 @@ export function ParallaxFrame({ children, className, depth = "soft", disabled = 
   }, [depth, disabled]);
 
   return (
-    <div ref={rootRef} className={cn("perspective-[1400px]", className)}>
+    <div ref={rootRef} className={cn("perspective-[2000px]", className)}>
       <div ref={frameRef} className="transform-gpu will-change-transform" style={{ transformStyle: "preserve-3d" }}>
         {children}
       </div>

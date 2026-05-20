@@ -2,11 +2,10 @@
 
 @theme {
   --font-sans: var(--font-geist-sans), Inter, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, serif;
   --color-background: #EEF7F0;
   --color-foreground: #08110C;
   --color-muted: #5D6B62;
-  --color-border: rgba(0, 0, 0, 0.06);
-  --color-card: #ffffff;
   --color-card-soft: #F8FAF9;
   --color-shell: #EEF7F0;
   --color-ai: #0D7A43;
