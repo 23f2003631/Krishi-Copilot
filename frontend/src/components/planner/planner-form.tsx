@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { CampaignContextRequest, Channel, Crop, DeviceType, Language, Objective, Scenario } from "@/types/contracts";
-import { createCampaignContext } from "@/services/api";
+import { startWorkflow } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -46,10 +46,14 @@ export function PlannerForm({ scenarios }: { scenarios: Scenario[] }) {
     };
 
     startTransition(async () => {
-      const response = await createCampaignContext(request);
+      const response = await startWorkflow({
+        ...request,
+        role: "campaign_manager"
+      });
       localStorage.setItem("syngenta_context_id", response.context_id);
+      localStorage.setItem("syngenta_plan_id", response.plan_id || "PLAN_001");
       localStorage.setItem("syngenta_scenario_id", selected.scenario_id);
-      router.push(`/recommendations?context_id=${response.context_id}`);
+      router.push(`/recommendations?context_id=${response.context_id}&plan_id=${response.plan_id || "PLAN_001"}`);
     });
   }
 
