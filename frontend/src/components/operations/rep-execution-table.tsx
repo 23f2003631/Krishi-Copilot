@@ -1,3 +1,5 @@
+"use client";
+
 import { Download, ClipboardList } from "lucide-react";
 import type { FieldAction } from "@/types/contracts";
 import { DashboardCard } from "@/components/dashboard/dashboard-card";
@@ -5,10 +7,30 @@ import { SectionHeader } from "@/components/dashboard/section-header";
 import { TableWrapper } from "@/components/dashboard/table-wrapper";
 import { Badge } from "@/components/ui/badge";
 
-const reps = ["Rahul Kumar", "Anjali Singh", "Priya Mani", "Suresh K."];
-const initials = ["RK", "AS", "PM", "SK"];
-
 export function RepExecutionTable({ actions }: { actions: FieldAction[] }) {
+  function exportReport() {
+    const header = ["action_id", "rep_id", "territory_id", "action_type", "summary", "due_date", "priority"];
+    const rows = actions.map((action) => [
+      action.action_id,
+      action.rep_id,
+      action.territory_id,
+      action.action_type,
+      action.summary,
+      action.due_date,
+      action.priority,
+    ]);
+    const csv = [header, ...rows]
+      .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `rep-execution-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <DashboardCard className="p-0">
       <div className="flex flex-col gap-4 border-b border-[#0B5B34]/[0.08] p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -19,6 +41,7 @@ export function RepExecutionTable({ actions }: { actions: FieldAction[] }) {
         />
         <button
           type="button"
+          onClick={exportReport}
           className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[#0B5B34]/12 bg-white/72 px-4 text-[13px] font-semibold text-[#0B5B34] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-colors hover:bg-white"
         >
           Export Report
@@ -40,15 +63,15 @@ export function RepExecutionTable({ actions }: { actions: FieldAction[] }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#0B5B34]/[0.07] bg-white/54">
-            {actions.slice(0, 4).map((action, index) => (
+            {actions.slice(0, 4).map((action) => (
               <tr key={action.action_id} className="text-[14px] text-[#08110C] transition-colors hover:bg-[#F7FAF8]/80">
                 <td className="px-5 py-5 text-[12px] font-semibold text-[#35433A]">{action.action_id}</td>
                 <td className="px-5 py-5">
                   <div className="flex items-center gap-3">
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#DDEADF] text-[11px] font-bold text-[#0B5B34]">
-                      {initials[index] ?? "CM"}
+                      {action.rep_id.replace("REP_", "R").slice(0, 3)}
                     </span>
-                    <span className="font-medium">{reps[index] ?? action.rep_id}</span>
+                    <span className="font-medium">{action.rep_id}</span>
                   </div>
                 </td>
                 <td className="px-5 py-5">{action.territory_id}</td>
@@ -70,7 +93,7 @@ export function RepExecutionTable({ actions }: { actions: FieldAction[] }) {
         </table>
       </TableWrapper>
       <div className="border-t border-[#0B5B34]/[0.08] bg-[#F7FAF8]/70 px-5 py-4 text-center text-[13px] font-semibold text-[#0D7A43]">
-        View All Activities (124)
+        View All Activities ({actions.length})
       </div>
     </DashboardCard>
   );

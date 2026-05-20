@@ -4,13 +4,8 @@ import { DashboardCard } from "@/components/dashboard/dashboard-card";
 import { OperationalPanel } from "@/components/dashboard/operational-panel";
 
 export function RetailerReadinessCard({ alerts }: { alerts: InventoryAlert[] }) {
-  const alert = alerts[0] ?? {
-    product: "Fortenza",
-    stock_status: "healthy",
-    stock_cover_days: 12,
-    affected_retailers: 8,
-  };
-  const stockPct = Math.min(100, Math.max(0, Math.round((alert.stock_cover_days / 14) * 100)));
+  const alert = alerts[0];
+  const stockPct = alert ? Math.min(100, Math.max(0, Math.round((alert.stock_cover_days / 14) * 100))) : 0;
 
   return (
     <DashboardCard className="min-h-[220px] p-5">
@@ -29,10 +24,12 @@ export function RetailerReadinessCard({ alerts }: { alerts: InventoryAlert[] }) 
       </div>
       <OperationalPanel className="mt-5 flex items-center justify-between rounded-[12px]">
         <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#5D6B62]">Coverage</span>
-        <span className="text-[13px] font-semibold text-[#08110C]">{alert.stock_cover_days} Days</span>
+        <span className="text-[13px] font-semibold text-[#08110C]">{alert ? `${alert.stock_cover_days} Days` : "No data"}</span>
       </OperationalPanel>
       <p className="mt-4 text-[12px] leading-5 text-[#5D6B62]">
-        {alert.affected_retailers} retailers clear for {alert.product} deployment.
+        {alert
+          ? `${alert.affected_retailers} retailers require attention for ${alert.product}; stock status is ${alert.stock_status.replace("_", " ")}.`
+          : "No live retailer readiness signal returned for this plan."}
       </p>
     </DashboardCard>
   );
