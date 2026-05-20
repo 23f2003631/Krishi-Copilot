@@ -1,31 +1,29 @@
 import { UsersRound } from "lucide-react";
 import { DashboardCard } from "@/components/dashboard/dashboard-card";
 import { SectionHeader } from "@/components/dashboard/section-header";
-import { Badge } from "@/components/ui/badge";
-
-const segments = [
-  { label: "Hindi smartphone wheat cohort", growers: "860", lift: "+3.0pp inquiry", tone: "success" },
-  { label: "Keypad wheat voice fallback", growers: "212", lift: "+1.0pp response", tone: "warning" },
-  { label: "Non-opener village follow-up", growers: "184", lift: "Rep-owned", tone: "default" }
-] as const;
 
 export function SegmentOpportunityCard() {
   return (
-    <DashboardCard>
-      <SectionHeader icon={UsersRound} title="Grower Cohort Opportunity" description="Audience cohorts translated into channel and field decisions." />
-      <div className="mt-4 space-y-3">
-        {segments.map((segment) => (
-          <div key={segment.label} className="enterprise-inset rounded-[18px] px-4 py-3">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold text-foreground">{segment.label}</p>
-              <Badge variant={segment.tone}>{segment.lift}</Badge>
-            </div>
-            <div className="mt-2 flex items-center justify-between text-xs text-muted">
-              <span>Growers in cohort</span>
-              <span className="font-semibold text-foreground">{segment.growers}</span>
-            </div>
+    <DashboardCard className="min-h-[300px]">
+      <SectionHeader icon={UsersRound} title="Segment Opportunity" description="Strategic grower segment growth potential." />
+      <div className="mt-7 flex flex-col items-center justify-center">
+        <div className="relative flex h-40 w-40 items-center justify-center rounded-full bg-[conic-gradient(#0D7A43_0_230deg,#D7E1DA_230deg_360deg)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_18px_42px_rgba(9,18,13,0.07)]">
+          <div className="absolute inset-4 rounded-full bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]" />
+          <div className="relative text-center">
+            <p className="text-[30px] font-semibold leading-none text-[#08110C]">64%</p>
+            <p className="mt-1 text-[13px] text-[#5D6B62]">Growth</p>
           </div>
-        ))}
+        </div>
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-[13px] text-[#35433A]">
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#0D7A43]" />
+            Tier 1 Growers
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#D7E1DA]" />
+            Marginal
+          </span>
+        </div>
       </div>
     </DashboardCard>
   );

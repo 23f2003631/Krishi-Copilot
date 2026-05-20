@@ -118,8 +118,14 @@ class WorkflowOrchestrator:
             "schema_version": "syngenta-copilot.v1",
             "request_id": f"req_{uuid.uuid4().hex[:8]}",
             "generated_at": datetime.now(timezone.utc).isoformat(),
-            "source_mode": context.get("source_mode", "rules"),
+            "source_mode": recommendations.get("source_mode", "cached_demo"),
             "warnings": [*context.get("warnings", []), *warnings],
+            "model_version": recommendations.get("model_version"),
+            "trained_on": recommendations.get("trained_on"),
+            "feature_version": recommendations.get("feature_version"),
+            "data_last_updated": recommendations.get("data_last_updated"),
+            "inventory_snapshot": recommendations.get("inventory_snapshot"),
+            "model_last_trained": recommendations.get("model_last_trained"),
             "workflow_id": workflow_id,
             "plan_id": plan_id,
             "context_id": context_id,
@@ -132,6 +138,7 @@ class WorkflowOrchestrator:
             "alerts": alerts,
             "next_action": next_action,
             "system_health": system_health,
+            "executive_summary": recommendations.get("executive_summary"),
         }
 
         # Store in-memory for retrieval

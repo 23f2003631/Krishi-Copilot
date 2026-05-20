@@ -5,7 +5,7 @@ const toneClasses = {
   ai: "text-[#0D7A43] bg-[#DDEADF] border-[#B7D8C3]/70",
   field: "text-[#0B5B34] bg-[#DDEADF] border-[#B7D8C3]/70",
   success: "text-[#0D7A43] bg-[#DDEADF] border-[#B7D8C3]/70",
-  warning: "text-[#B7791F] bg-[#FFF8E7] border-[#E8C36F]/45",
+  warning: "text-[#B4232A] bg-[#FDE8E8] border-[#E9B7BA]/55",
   danger: "text-[#B42318] bg-[#FFF3F0] border-[#F0B8AE]/55"
 };
 
@@ -13,7 +13,7 @@ const barClasses = {
   ai: "bg-[#B7D8C3]",
   field: "bg-[#B7D8C3]",
   success: "bg-[#B7D8C3]",
-  warning: "bg-[#E8C36F]",
+  warning: "bg-[#E9B7BA]",
   danger: "bg-[#F0B8AE]"
 };
 
@@ -37,9 +37,9 @@ export function KpiStatCard({
   const isNegative = trend.startsWith("-");
   
   return (
-    <section className="group relative h-[168px] overflow-hidden rounded-[18px] border border-[#0B5B34]/[0.08] bg-[#F8FAF9] p-[1px] shadow-[0_1px_2px_rgba(9,18,13,0.04),0_18px_42px_rgba(9,18,13,0.065)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-[#0D7A43]/15 hover:shadow-[0_2px_3px_rgba(9,18,13,0.04),0_24px_56px_rgba(9,18,13,0.09)]">
+    <section className="group relative min-h-[184px] overflow-hidden rounded-[16px] border border-[#0B5B34]/[0.08] bg-[#F8FAF9] p-[1px] shadow-[0_1px_2px_rgba(9,18,13,0.04),0_18px_42px_rgba(9,18,13,0.065)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-[#0D7A43]/15 hover:shadow-[0_2px_3px_rgba(9,18,13,0.04),0_24px_56px_rgba(9,18,13,0.09)]">
       <div className="absolute inset-x-5 -bottom-4 h-10 rounded-full bg-[#0B5B34]/[0.035] blur-xl" />
-      <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[17px] bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.95),transparent_36%),linear-gradient(145deg,#FFFFFF_0%,#F7FAF8_45%,#EEF3EF_100%)] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-24px_48px_rgba(9,18,13,0.035)]">
+      <div className="relative flex h-full min-h-[182px] flex-col justify-between overflow-hidden rounded-[15px] bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.95),transparent_36%),linear-gradient(145deg,#FFFFFF_0%,#F7FAF8_45%,#EEF3EF_100%)] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-24px_48px_rgba(9,18,13,0.035)]">
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.72),transparent_32%,transparent_72%,rgba(13,122,67,0.035))]" />
         <div className="pointer-events-none absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
 

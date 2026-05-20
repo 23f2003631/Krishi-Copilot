@@ -22,6 +22,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+import time
+from fastapi import Request
+
+@app.middleware("http")
+async def add_start_time_to_state(request: Request, call_next):
+    request.state.start_time = time.perf_counter()
+    response = await call_next(request)
+    return response
+
 app.include_router(scenarios.router, prefix="/api/v1", tags=["scenarios"])
 app.include_router(context.router, prefix="/api/v1", tags=["campaign-context"])
 app.include_router(recommendations.router, prefix="/api/v1", tags=["recommendations"])

@@ -73,6 +73,13 @@ export interface WorkflowState {
   generated_at: string;
   source_mode: string;
   warnings: string[];
+  model_version?: string;
+  trained_on?: string;
+  feature_version?: string;
+  data_last_updated?: string;
+  inventory_snapshot?: string;
+  model_last_trained?: string;
+  response_time_ms?: number;
   workflow_id: string;
   plan_id: string;
   context_id: string;
@@ -85,4 +92,5 @@ export interface WorkflowState {
   alerts: OperationalEvent[];
   next_action: NextBestAction | null;
   system_health: SystemHealth | null;
+  executive_summary?: Record<string, unknown> | null;
 }
