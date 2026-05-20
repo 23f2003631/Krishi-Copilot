@@ -99,7 +99,7 @@ export function RecommendationsClient({ recommendations, analytics }: any) {
           <div className="flex gap-3">
             <ExportButton label="Export to CSV" planId={recommendations.plan_id} type="csv" />
             <Button asChild>
-              <Link href={`/content-studio?plan_id=${recommendations.plan_id}&recommendation_id=${top.recommendation_id}`}>
+              <Link href={`/content-studio?plan_id=${recommendations.plan_id}&recommendation_id=${top.recommendation_id}&context_id=${recommendations.context_id}`}>
                 Draft Advisory Pack
               </Link>
             </Button>
@@ -144,7 +144,7 @@ export function RecommendationsClient({ recommendations, analytics }: any) {
         <div className="flex items-center gap-1.5">
           <span className="font-semibold text-foreground">Response Timing:</span>
           <span className="font-bold text-emerald-700">
-            {recommendations.response_time_ms ? `${recommendations.response_time_ms} ms` : "12 ms"}
+            {recommendations.response_time_ms ? `${recommendations.response_time_ms} ms` : "live"}
           </span>
         </div>
       </div>
@@ -193,7 +193,7 @@ export function RecommendationsClient({ recommendations, analytics }: any) {
           )}
         </DashboardCard>
 
-        <div className="grid gap-5">
+        <div id="analytics" className="grid gap-5">
           <DashboardCard>
             <SectionHeader icon={BarChart3} title="Grower Response Funnel" description="Expected lift against broad campaign baseline." />
             <div className="mt-5 h-[260px]">

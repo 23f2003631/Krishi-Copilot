@@ -2,6 +2,8 @@ import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { fetchAnalyticsSummary, fetchRecommendations } from "@/services/api";
 import { RecommendationsClient } from "@/components/dashboard/recommendations-client";
 
+export const dynamic = "force-dynamic";
+
 export default async function RecommendationsPage({
   searchParams,
 }: {

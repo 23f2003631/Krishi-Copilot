@@ -80,7 +80,7 @@ export function PlannerClient({
   const workflowId = workflowState?.workflow_id;
   const isPreview = displayMode === "hero-preview";
   const topRecommendation = recommendations?.recommendations?.[0];
-  const [dynamicKpis, setDynamicKpis] = useState<KpiItem[]>([]);
+  const [dynamicKpis, setDynamicKpis] = useState<KpiItem[]>(workflowState?.kpis?.kpis ?? []);
 
   useEffect(() => {
     if (!workflowId || disableLivePolling || isPreview) {
@@ -143,7 +143,14 @@ export function PlannerClient({
       ));
     }
 
-    return getFallbackKpis(role, roleConfig).map((kpi: any) => <KpiStatCard key={kpi.label} {...kpi} />);
+    const kpis = analytics?.kpis;
+    if (!kpis) return null;
+    return [
+      { label: "Target Growers", value: kpis.target_growers?.toLocaleString?.() ?? "0", trend: "processed cohort", metadata: "from feature table", icon: UsersRound, tone: "field" },
+      { label: "Expected Leads", value: String(kpis.expected_leads ?? 0), trend: "model forecast", metadata: "response proxy", icon: Target, tone: "success" },
+      { label: "Stock Ready Retailers", value: String(kpis.stock_ready_retailers ?? 0), trend: `${kpis.stock_cover_days ?? 0} days cover`, metadata: "inventory/POS", icon: Store, tone: "ai" },
+      { label: "Field Actions", value: String(kpis.field_actions ?? 0), trend: "rep queue", metadata: "visit logs", icon: ClipboardList, tone: "warning" },
+    ].map((kpi: any) => <KpiStatCard key={kpi.label} {...kpi} />);
   };
 
   return (
@@ -175,19 +182,21 @@ export function PlannerClient({
           <AIRecommendationCard recommendation={topRecommendation} compact={isPreview} />
         </div>
         <div className="grid gap-5 xl:col-span-3">
-          <RetailerReadinessCard alerts={context?.inventory_alerts ?? []} />
+          <div id="retailer-alerts">
+            <RetailerReadinessCard alerts={context?.inventory_alerts ?? []} />
+          </div>
           <WeatherTriggerPanel insight={context?.weather_insights?.[0]} />
         </div>
       </motion.div>
 
       <motion.div variants={itemVariants} className="grid gap-5 xl:grid-cols-12">
-        <div className="xl:col-span-5">
+        <div id="settings" className="xl:col-span-5">
           <CampaignPriorityCard scenarios={scenarios ?? []} />
         </div>
-        <div className="xl:col-span-4">
-          <SegmentOpportunityCard />
+        <div id="grower-segments" className="xl:col-span-4">
+          <SegmentOpportunityCard analytics={analytics} recommendations={recommendations} />
         </div>
-        <div className="xl:col-span-3">
+        <div id="analytics" className="xl:col-span-3">
           {isPreview ? <FunnelPreviewCard /> : <FunnelAnalyticsCard data={analytics?.charts?.weekly_funnel ?? []} />}
         </div>
       </motion.div>

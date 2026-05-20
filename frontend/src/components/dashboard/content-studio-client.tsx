@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { FileCheck2, Languages, MessageSquareText, ShieldCheck, Target, AlertTriangle } from "lucide-react";
 import { ContentPreviewCard } from "@/components/cards/content-preview-card";
 import { DashboardCard } from "@/components/dashboard/dashboard-card";
@@ -13,26 +14,35 @@ import { OperationalAlertBanner } from "@/components/ui/operational-alert-banner
 
 export function ContentStudioClient({ content, recommendations }: any) {
   const { role } = useRole();
-  const selected = recommendations.recommendations[0];
+  const [variants, setVariants] = useState(content.variants || []);
+  const selected = recommendations.recommendations[0] || {
+    crop: "wheat",
+    product: "Tilt 250 EC",
+    timing: { send_window: "not scheduled" },
+  };
+  const languages = new Set(variants.map((variant: any) => variant.language));
+  const formats = new Set(variants.map((variant: any) => variant.format));
+  const safetyFlags = variants.reduce((count: number, variant: any) => count + (variant.safety_flags?.length || 0), 0);
+  const pending = variants.filter((variant: any) => variant.approval_state === "pending_review").length;
 
   const renderKpis = () => {
     switch (role) {
       case "Campaign Manager":
         return (
           <>
-            <KpiStatCard label="Advisory Formats" value="5" trend="WhatsApp, SMS, IVR, rep, visual" metadata="field pack" icon={MessageSquareText} tone="ai" />
-            <KpiStatCard label="Grower Languages" value="2" trend="Hindi + English" metadata="local review" icon={Languages} tone="field" />
-            <KpiStatCard label="Claim Risk Flags" value="0" trend="no dosage or yield claims" metadata="guardrail pass" icon={ShieldCheck} tone="success" />
-            <KpiStatCard label="Agronomy Review" value="Pending" trend="human approval" metadata="required" icon={FileCheck2} tone="warning" />
+            <KpiStatCard label="Advisory Formats" value={formats.size.toString()} trend={[...formats].join(", ")} metadata="field pack" icon={MessageSquareText} tone="ai" />
+            <KpiStatCard label="Grower Languages" value={languages.size.toString()} trend={[...languages].join(" + ")} metadata="local review" icon={Languages} tone="field" />
+            <KpiStatCard label="Claim Risk Flags" value={safetyFlags.toString()} trend={safetyFlags ? "review needed" : "no dosage or yield claims"} metadata="guardrail pass" icon={ShieldCheck} tone={safetyFlags ? "warning" : "success"} />
+            <KpiStatCard label="Agronomy Review" value={pending ? "Pending" : "Approved"} trend={`${pending} pending`} metadata="required" icon={FileCheck2} tone={pending ? "warning" : "success"} />
           </>
         );
       case "Field Representative":
         return (
           <>
-            <KpiStatCard label="Talking Points" value="3" trend="ready for use" metadata="field pack" icon={MessageSquareText} tone="ai" />
-            <KpiStatCard label="Language Support" value="Hindi" trend="grower match" metadata="local dialect" icon={Languages} tone="field" />
-            <KpiStatCard label="Compliance Status" value="Approved" trend="safe to share" metadata="guardrail pass" icon={ShieldCheck} tone="success" />
-            <KpiStatCard label="Priority Topic" value="Fungicide" trend="disease risk" metadata="urgent" icon={AlertTriangle} tone="warning" />
+            <KpiStatCard label="Talking Points" value={variants.filter((variant: any) => variant.format === "rep_script").length.toString()} trend="generated from recommendation" metadata="field pack" icon={MessageSquareText} tone="ai" />
+            <KpiStatCard label="Language Support" value={[...languages].join(", ") || "None"} trend="grower match" metadata="local dialect" icon={Languages} tone="field" />
+            <KpiStatCard label="Compliance Status" value={safetyFlags ? "Review" : "Clean"} trend="safe template rules" metadata="guardrail pass" icon={ShieldCheck} tone={safetyFlags ? "warning" : "success"} />
+            <KpiStatCard label="Priority Topic" value={selected.product} trend={selected.crop} metadata="current recommendation" icon={AlertTriangle} tone="warning" />
           </>
         );
       default:
@@ -61,7 +71,7 @@ export function ContentStudioClient({ content, recommendations }: any) {
         
         {role === "Campaign Manager" && (
           <Button asChild>
-            <Link href="/field-actions?plan_id=PLAN_001">Approve & Send to Field</Link>
+            <Link href={`/field-actions?plan_id=${content.plan_id}`}>Approve & Send to Field</Link>
           </Button>
         )}
       </div>
@@ -77,7 +87,7 @@ export function ContentStudioClient({ content, recommendations }: any) {
             <div className="mt-5 space-y-3">
               <Guardrail label="Crop authorization" value={selected.crop} />
               <Guardrail label="Product authorization" value={selected.product} />
-              <Guardrail label="Crop-stage context" value="flowering" />
+              <Guardrail label="Crop-stage context" value={selected.timing?.send_window ?? "current window"} />
               <Guardrail label="Blocked claims" value="dosage, yield guarantee, cure promise" />
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
@@ -90,8 +100,18 @@ export function ContentStudioClient({ content, recommendations }: any) {
           <DashboardCard>
             <SectionHeader icon={MessageSquareText} title={role === "Campaign Manager" ? "Field Advisory Variants" : "Approved Talking Points"} description="Generated outputs using the AI service." />
             <div className="mt-5 grid gap-4 lg:grid-cols-2">
-              {content.variants.map((variant: any) => (
-                <ContentPreviewCard key={variant.content_id} variant={variant} />
+              {variants.map((variant: any) => (
+                <ContentPreviewCard
+                  key={variant.content_id}
+                  variant={variant}
+                  onApproved={(updated) => {
+                    setVariants((current: any[]) =>
+                      current.map((item) =>
+                        item.content_id === updated.content_id ? { ...item, approval_state: updated.approval_state } : item
+                      )
+                    );
+                  }}
+                />
               ))}
             </div>
           </DashboardCard>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardList, Download, PackageCheck, Store, UsersRound, AlertTriangle, CloudRain, Target } from "lucide-react";
+import { ClipboardList, PackageCheck, Store, UsersRound, AlertTriangle, CloudRain, Target } from "lucide-react";
 import { DashboardCard } from "@/components/dashboard/dashboard-card";
 import { SectionHeader } from "@/components/dashboard/section-header";
 import { KpiStatCard } from "@/components/cards/kpi-stat-card";
@@ -10,46 +10,53 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRole } from "@/lib/contexts/RoleContext";
 import { OperationalAlertBanner } from "@/components/ui/operational-alert-banner";
+import { ExportButton } from "@/components/actions/export-button";
 
 export function FieldActionsClient({ fieldActions, analytics }: any) {
   const { role, roleConfig } = useRole();
+  const actions = fieldActions?.actions ?? [];
+  const highPriority = actions.filter((action: any) => action.priority === "high").length;
+  const stockCoverDays = analytics?.kpis?.stock_cover_days ?? 0;
+  const stockReadyRetailers = analytics?.kpis?.stock_ready_retailers ?? 0;
+  const targetGrowers = analytics?.kpis?.target_growers ?? 0;
+  const expectedLeads = analytics?.kpis?.expected_leads ?? 0;
 
   const renderKpis = () => {
     switch (role) {
       case "Campaign Manager":
         return (
           <>
-            <KpiStatCard label="Field Work Orders" value={analytics.kpis.field_actions.toString()} trend="due by Feb 18" metadata="rep-owned" icon={ClipboardList} tone="ai" />
-            <KpiStatCard label="Stock-Ready Retailers" value={analytics.kpis.stock_ready_retailers.toString()} trend="18 days cover" metadata="Kanpur cluster" icon={Store} tone="success" />
-            <KpiStatCard label="Target Growers" value={analytics.kpis.target_growers.toLocaleString()} trend="high receptivity" metadata="wheat cohort" icon={UsersRound} tone="field" />
-            <KpiStatCard label="Stock Gate" value="Pass" trend="no launch block" metadata="Tilt 250 EC" icon={PackageCheck} tone="success" />
+            <KpiStatCard label="Field Work Orders" value={actions.length.toString()} trend="from visit logs" metadata="rep-owned" icon={ClipboardList} tone="ai" />
+            <KpiStatCard label="Stock-Ready Retailers" value={stockReadyRetailers.toString()} trend={`${stockCoverDays} days cover`} metadata="inventory/POS" icon={Store} tone="success" />
+            <KpiStatCard label="Target Growers" value={targetGrowers.toLocaleString()} trend="processed cohort" metadata="feature table" icon={UsersRound} tone="field" />
+            <KpiStatCard label="Stock Gate" value={stockCoverDays >= 10 ? "Pass" : "Hold"} trend={stockCoverDays >= 10 ? "no launch block" : "below threshold"} metadata="stock guardrail" icon={PackageCheck} tone={stockCoverDays >= 10 ? "success" : "warning"} />
           </>
         );
       case "Territory Manager":
         return (
           <>
-            <KpiStatCard label="Territory Coverage" value="92%" trend="assigned" metadata="reps deployed" icon={ClipboardList} tone="success" />
-            <KpiStatCard label="Blocked Tasks" value="2" trend="weather risk" metadata="needs routing" icon={AlertTriangle} tone="warning" />
-            <KpiStatCard label="Retailer Readiness" value={analytics.kpis.stock_ready_retailers.toString()} trend="stock cover" metadata="Kanpur cluster" icon={Store} tone="ai" />
-            <KpiStatCard label="Expected Lift" value={analytics.kpis.expected_leads.toString()} trend="inquiries" metadata="cohort proxy" icon={UsersRound} tone="field" />
+            <KpiStatCard label="Territory Coverage" value={actions.length.toString()} trend="assigned reps" metadata="current plan" icon={ClipboardList} tone="success" />
+            <KpiStatCard label="Blocked Tasks" value={highPriority.toString()} trend="high priority" metadata="needs routing" icon={AlertTriangle} tone={highPriority ? "warning" : "success"} />
+            <KpiStatCard label="Retailer Readiness" value={stockReadyRetailers.toString()} trend={`${stockCoverDays} days cover`} metadata="inventory/POS" icon={Store} tone="ai" />
+            <KpiStatCard label="Expected Lift" value={expectedLeads.toString()} trend="inquiries" metadata="cohort proxy" icon={UsersRound} tone="field" />
           </>
         );
       case "Field Representative":
         return (
           <>
-            <KpiStatCard label="My Assigned Tasks" value="18" trend="priority queue" metadata="due this week" icon={ClipboardList} tone="ai" />
-            <KpiStatCard label="Urgent Visits" value="5" trend="disease risk" metadata="high focus" icon={Target} tone="warning" />
-            <KpiStatCard label="Weather Delay" value="0" trend="clear conditions" metadata="safe to travel" icon={CloudRain} tone="success" />
-            <KpiStatCard label="Retailer Status" value="Ready" trend="Tilt 250 EC" metadata="stock confirmed" icon={Store} tone="field" />
+            <KpiStatCard label="My Assigned Tasks" value={actions.length.toString()} trend="priority queue" metadata="due this week" icon={ClipboardList} tone="ai" />
+            <KpiStatCard label="Urgent Visits" value={highPriority.toString()} trend="field priority" metadata="high focus" icon={Target} tone={highPriority ? "warning" : "success"} />
+            <KpiStatCard label="Weather Delay" value={analytics?.charts?.weekly_funnel?.length ? "0" : "N/A"} trend="from weather signal" metadata="route check" icon={CloudRain} tone="success" />
+            <KpiStatCard label="Retailer Status" value={stockCoverDays >= 10 ? "Ready" : "Hold"} trend={`${stockCoverDays} days cover`} metadata="stock confirmed" icon={Store} tone="field" />
           </>
         );
       case "Retailer Support":
         return (
           <>
-            <KpiStatCard label="Critical Stockouts" value="1" trend="Tilt 250 EC" metadata="Kanpur Nagar" icon={AlertTriangle} tone="warning" />
-            <KpiStatCard label="Replenishment" value="Pending" trend="dispatch requested" metadata="48h ETA" icon={PackageCheck} tone="field" />
-            <KpiStatCard label="Affected Tasks" value="4" trend="blocked reps" metadata="territory hold" icon={ClipboardList} tone="ai" />
-            <KpiStatCard label="Coverage Gap" value="12%" trend="regional impact" metadata="monitoring" icon={Store} tone="success" />
+            <KpiStatCard label="Critical Stockouts" value={stockCoverDays === 0 ? "1" : "0"} trend="stock guardrail" metadata={`${stockCoverDays} days cover`} icon={AlertTriangle} tone={stockCoverDays === 0 ? "warning" : "success"} />
+            <KpiStatCard label="Replenishment" value={stockCoverDays < 10 ? "Needed" : "Not needed"} trend="dispatch decision" metadata="inventory/POS" icon={PackageCheck} tone="field" />
+            <KpiStatCard label="Affected Tasks" value={highPriority.toString()} trend="priority reps" metadata="territory hold" icon={ClipboardList} tone="ai" />
+            <KpiStatCard label="Coverage Gap" value={String(Math.max(0, actions.length - stockReadyRetailers))} trend="retailer actions" metadata="monitoring" icon={Store} tone="success" />
           </>
         );
       default:
@@ -86,14 +93,8 @@ export function FieldActionsClient({ fieldActions, analytics }: any) {
         <div className="flex flex-wrap gap-3">
           {(role === "Campaign Manager" || role === "Territory Manager") && (
             <>
-              <Button variant="secondary">
-                <Download className="h-4 w-4 mr-2" />
-                Export CSV
-              </Button>
-              <Button>
-                <Download className="h-4 w-4 mr-2" />
-                Export Rep Brief
-              </Button>
+              <ExportButton label="Export CSV" planId={fieldActions.plan_id} type="csv" />
+              <ExportButton label="Export Rep Brief" planId={fieldActions.plan_id} type="rep_brief" />
             </>
           )}
         </div>
@@ -112,19 +113,24 @@ export function FieldActionsClient({ fieldActions, analytics }: any) {
           />
           <div className="mt-5">
             {/* Demonstrate empty states for Retailer Support since they shouldn't see rep tasks normally */}
-            {role === "Retailer Support" ? getEmptyState() : <OperationalTable actions={fieldActions.actions} />}
+            {role === "Retailer Support" ? getEmptyState() : <OperationalTable actions={actions} />}
           </div>
         </DashboardCard>
 
         <div className="grid gap-5">
-          <DashboardCard>
+          <DashboardCard id="retailer-alerts">
             <SectionHeader icon={PackageCheck} title="Retailer Coverage Alerts" description={role === "Retailer Support" ? "Active inventory signals and escalations." : "Grower demand is gated by available local stock."} />
             <div className="mt-5 space-y-3">
-              <RetailerAlert label="RTL_0091 | Kanpur wheat cluster" status={role === "Retailer Support" ? "Resolving" : "Stock sufficient"} note="Confirm Tilt 250 EC display before Hindi advisory push." />
-              <RetailerAlert label="RTL_0112 | T023 village route" status="Stock sufficient" note="Prepare rep talking points and grower inquiry log." />
-              {(role === "Retailer Support" || role === "Territory Manager") && (
-                <RetailerAlert label="Sikar mustard stock gate" status="Hold outreach" note="Score 250 EC stock cover is below territory threshold." warning />
-              )}
+              {actions.slice(0, 3).map((action: any) => (
+                <RetailerAlert
+                  key={action.action_id}
+                  label={`${action.territory_id} | ${action.retailer_ids?.[0] ?? "retailer route"}`}
+                  status={action.priority === "high" ? "Action needed" : "Ready"}
+                  note={action.summary}
+                  warning={action.priority === "high"}
+                />
+              ))}
+              {!actions.length && <RetailerAlert label="No active retailer alerts" status="Clear" note="No field action rows returned for the active plan." />}
             </div>
             {role === "Retailer Support" && (
               <Button className="mt-4 w-full" variant="secondary">{roleConfig.primaryAction}</Button>
@@ -135,7 +141,7 @@ export function FieldActionsClient({ fieldActions, analytics }: any) {
             <DashboardCard>
               <SectionHeader icon={UsersRound} title="Grower Cohort Engagement" description="Predicted outcomes versus baseline." />
               <div className="mt-5 h-[240px]">
-                <SegmentEngagementChart />
+                <SegmentEngagementChart data={analytics?.charts?.engagement_funnel ?? []} />
               </div>
             </DashboardCard>
           )}
