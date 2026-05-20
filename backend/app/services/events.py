@@ -23,7 +23,7 @@ def build_workflow_events(
     """Build a sequence of workflow events from orchestration state."""
     events = []
     now = datetime.now(timezone.utc)
-    district = "Kanpur Nagar"
+    district = context.get("geography", {}).get("district") or context.get("district") or "current territory"
 
     # Event 1: Campaign context created
     events.append(_event(

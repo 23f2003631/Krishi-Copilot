@@ -1,14 +1,10 @@
-"""Operational Event Engine — polling-based operational intelligence generation.
-
-Generates role-aware operational events derived from workflow context
-and environmental signals. Uses seeded + derived strategy for realism.
-"""
+"""Operational Event Engine - polling-based operational intelligence generation."""
 
 from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -18,35 +14,32 @@ def generate_operational_events(
     context: dict | None = None,
     workflow_state: dict | None = None,
 ) -> list[dict]:
-    """Generate role-aware operational intelligence events.
-
-    Combines context-derived signals (weather, inventory) with
-    workflow-state-derived signals (approval delays, blocked campaigns).
-    Timestamps are relative to now for realism.
-    """
+    """Generate role-aware operational intelligence from live workflow state."""
     now = datetime.now(timezone.utc)
-    events = []
+    events: list[dict] = []
     state = workflow_state or {}
     ctx = context or {}
     role_key = role.lower().replace(" ", "_")
 
-    # --- Context-derived events ---
     weather = ctx.get("weather_insights", [])
     if weather and weather[0].get("risk_level") in ("high", "medium"):
         events.append(_evt(
             f"Weather alert: {weather[0].get('summary', 'Risk detected')}",
-            now - timedelta(minutes=8), "warning", role
+            now - timedelta(minutes=8),
+            "warning",
+            role,
         ))
 
     inventory = ctx.get("inventory_alerts", [])
     if inventory and inventory[0].get("stock_status") in ("low", "out_of_stock"):
         product = inventory[0].get("product", "Product")
         events.append(_evt(
-            f"Critical: {product} stock below threshold — {inventory[0].get('stock_cover_days', 0)} days cover remaining",
-            now - timedelta(minutes=3), "warning", role
+            f"Stock guardrail active for {product}: {inventory[0].get('stock_cover_days', 0)} days cover remaining",
+            now - timedelta(minutes=3),
+            "warning",
+            role,
         ))
 
-    # --- Workflow-state-derived events ---
     recs = state.get("recommendations", [])
     variants = state.get("content_variants", [])
     blocked = [r for r in recs if r.get("blocked")]
@@ -56,60 +49,55 @@ def generate_operational_events(
     if approved:
         events.append(_evt(
             f"{len(approved)} advisory variant(s) approved and ready for deployment",
-            now - timedelta(minutes=5), "success", role
+            now - timedelta(minutes=5),
+            "success",
+            role,
         ))
 
     if pending:
         events.append(_evt(
             f"{len(pending)} content variant(s) awaiting agronomy review",
-            now - timedelta(minutes=2), "info", role
+            now - timedelta(minutes=2),
+            "info",
+            role,
         ))
 
     if blocked:
         events.append(_evt(
-            f"{len(blocked)} campaign(s) blocked by stock guardrail — escalation required",
-            now - timedelta(minutes=6), "warning", role
+            f"{len(blocked)} campaign segment(s) blocked by stock guardrail",
+            now - timedelta(minutes=6),
+            "warning",
+            role,
         ))
 
-    # --- Role-specific seeded intelligence ---
-    if role_key == "campaign_manager":
-        events.extend([
-            _evt("Kanpur Nagar cohort receptivity score updated: 78% → 82%", now - timedelta(minutes=11), "info", role),
-            _evt("Rep brief exported for T023 territory cluster", now - timedelta(minutes=18), "info", role),
-        ])
-    elif role_key == "territory_manager":
-        events.extend([
-            _evt("2 reps dispatched to Kanpur wheat cluster", now - timedelta(minutes=14), "info", role),
-            _evt("Field completion rate updated: 58% → 64%", now - timedelta(minutes=22), "success", role),
-        ])
-    elif role_key == "field_representative":
-        events.extend([
-            _evt("Visit completed: G-0987 — lead confirmed", now - timedelta(minutes=15), "success", role),
-            _evt("Talking points updated for fungicide advisory", now - timedelta(minutes=20), "info", role),
-            _evt("Weather clear for tomorrow's route — no delays expected", now - timedelta(minutes=30), "success", role),
-        ])
-    elif role_key == "retailer_support":
-        events.extend([
-            _evt("Replenishment dispatched to Kanpur Nagar cluster", now - timedelta(minutes=10), "success", role),
-            _evt("RTL_0091 inventory audit passed — stock sufficient", now - timedelta(minutes=25), "success", role),
-        ])
+    if recs:
+        top = recs[0]
+        if role_key in ("campaign_manager", "territory_manager"):
+            events.append(_evt(
+                f"Top segment {top.get('segment_label', 'current cohort')} scored {top.get('priority_score', 0)}/100 from processed features",
+                now - timedelta(minutes=11),
+                "info",
+                role,
+            ))
+        elif role_key == "field_representative":
+            events.append(_evt(
+                f"{len(recs)} field action segment(s) ready after advisory approval",
+                now - timedelta(minutes=12),
+                "info",
+                role,
+            ))
+        elif role_key == "retailer_support":
+            events.append(_evt(
+                f"Inventory gate checked for {top.get('product', 'active product')}",
+                now - timedelta(minutes=12),
+                "info",
+                role,
+            ))
 
-    # Sort by timestamp descending (most recent first)
-    events.sort(key=lambda e: e["timestamp"], reverse=True)
-
-    # Compute relative time strings
+    events.sort(key=lambda event: event["timestamp"], reverse=True)
     for event in events:
-        ts = datetime.fromisoformat(event["timestamp"])
-        delta = now - ts
-        minutes = int(delta.total_seconds() / 60)
-        if minutes < 1:
-            event["time"] = "just now"
-        elif minutes < 60:
-            event["time"] = f"{minutes}m ago"
-        else:
-            event["time"] = f"{minutes // 60}h ago"
-
-    return events[:8]  # Cap at 8 events
+        event["time"] = _relative_time(now, event["timestamp"])
+    return events[:8]
 
 
 def generate_operational_alerts(
@@ -117,12 +105,9 @@ def generate_operational_alerts(
     context: dict | None = None,
     workflow_state: dict | None = None,
 ) -> list[dict]:
-    """Generate the primary operational alert for a role.
-
-    Returns a list of 1-2 high-priority alerts based on context + workflow state.
-    """
+    """Generate primary alerts only when the workflow has a real alert condition."""
     now = datetime.now(timezone.utc)
-    alerts = []
+    alerts: list[dict] = []
     ctx = context or {}
     state = workflow_state or {}
     role_key = role.lower().replace(" ", "_")
@@ -130,67 +115,73 @@ def generate_operational_alerts(
     blocked = [r for r in recs if r.get("blocked")]
     pending_count = sum(1 for v in state.get("content_variants", []) if v.get("approval_state") == "pending_review")
 
-    if role_key == "campaign_manager":
-        if pending_count:
-            alerts.append(_evt(
-                f"{pending_count} campaign(s) awaiting your approval for deployment.",
-                now - timedelta(minutes=2), "info", role
-            ))
-        else:
-            alerts.append(_evt(
-                "3 campaigns are awaiting your approval for deployment tomorrow.",
-                now - timedelta(minutes=2), "info", role
-            ))
+    if role_key == "campaign_manager" and pending_count:
+        alerts.append(_evt(
+            f"{pending_count} advisory variant(s) awaiting approval before field release.",
+            now - timedelta(minutes=2),
+            "info",
+            role,
+        ))
 
     elif role_key == "territory_manager":
         weather = ctx.get("weather_insights", [])
         if weather and weather[0].get("risk_level") == "high":
             alerts.append(_evt(
-                f"High pest risk detected. {len(blocked)} campaign(s) blocked.",
-                now - timedelta(minutes=8), "warning", role
+                f"High weather risk detected; {len(blocked)} segment(s) currently blocked.",
+                now - timedelta(minutes=8),
+                "warning",
+                role,
             ))
-        else:
+        elif blocked:
             alerts.append(_evt(
-                f"High pest risk detected in Maharashtra. {max(len(blocked), 2)} campaigns blocked.",
-                now - timedelta(minutes=8), "warning", role
+                f"{len(blocked)} segment(s) blocked by current stock guardrail.",
+                now - timedelta(minutes=8),
+                "warning",
+                role,
             ))
 
     elif role_key == "field_representative":
-        overdue = max(18 - len(state.get("events", [])), 5)
-        alerts.append(_evt(
-            f"You have {overdue} high-priority grower visits overdue.",
-            now - timedelta(minutes=5), "warning", role
-        ))
+        high_priority = sum(1 for r in recs if r.get("timing", {}).get("urgency") == "high")
+        if high_priority:
+            alerts.append(_evt(
+                f"{high_priority} high-priority grower segment(s) need field follow-up.",
+                now - timedelta(minutes=5),
+                "warning",
+                role,
+            ))
 
     elif role_key == "retailer_support":
         inventory = ctx.get("inventory_alerts", [])
         if inventory and inventory[0].get("stock_status") in ("low", "out_of_stock"):
-            product = inventory[0].get("product", "Tilt 250 EC")
+            product = inventory[0].get("product", "Product")
             alerts.append(_evt(
-                f"Critical stockout: {product} in Kanpur Nagar. Escalation required.",
-                now - timedelta(minutes=1), "warning", role
-            ))
-        else:
-            alerts.append(_evt(
-                "Critical stockout: Tilt 250 EC in Kanpur Nagar. Escalation required.",
-                now - timedelta(minutes=1), "warning", role
+                f"Stock guardrail active: {product} has {inventory[0].get('stock_cover_days', 0)} days cover.",
+                now - timedelta(minutes=1),
+                "warning",
+                role,
             ))
 
-    # Compute relative time
     for alert in alerts:
-        ts = datetime.fromisoformat(alert["timestamp"])
-        delta = now - ts
-        minutes = int(delta.total_seconds() / 60)
-        alert["time"] = f"{minutes}m ago" if minutes < 60 else f"{minutes // 60}h ago"
-
+        alert["time"] = _relative_time(now, alert["timestamp"])
     return alerts
+
+
+def _relative_time(now: datetime, timestamp: str) -> str:
+    ts = datetime.fromisoformat(timestamp)
+    delta = now - ts
+    minutes = int(delta.total_seconds() / 60)
+    if minutes < 1:
+        return "just now"
+    if minutes < 60:
+        return f"{minutes}m ago"
+    return f"{minutes // 60}h ago"
 
 
 def _evt(text: str, timestamp: datetime, event_type: str, role: str) -> dict:
     return {
         "event_id": f"oev_{uuid.uuid4().hex[:8]}",
         "text": text,
-        "time": "",  # Computed after generation
+        "time": "",
         "timestamp": timestamp.isoformat(),
         "event_type": event_type,
         "role": role,

@@ -7,8 +7,8 @@ load_dotenv()
 
 @dataclass(frozen=True)
 class Settings:
-    data_mode: str = os.getenv("DATA_MODE", "mock")
-    demo_cache_enabled: bool = os.getenv("DEMO_CACHE_ENABLED", "true").lower() != "false"
+    data_mode: str = os.getenv("DATA_MODE", "local")
+    demo_cache_enabled: bool = os.getenv("DEMO_CACHE_ENABLED", "false").lower() == "true"
 
     # Supabase
     supabase_url: str | None = os.getenv("SUPABASE_URL") or None

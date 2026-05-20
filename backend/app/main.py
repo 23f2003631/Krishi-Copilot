@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import logging
+from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
@@ -40,8 +42,11 @@ app.include_router(analytics.router, prefix="/api/v1", tags=["analytics"])
 app.include_router(export.router, prefix="/api/v1", tags=["export"])
 app.include_router(workflow_router.router, prefix="/api/v1", tags=["workflow"])
 
+EXPORT_DIR = Path(__file__).resolve().parents[2] / "exports"
+EXPORT_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/exports", StaticFiles(directory=str(EXPORT_DIR)), name="exports")
+
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "service": "syngenta-copilot-api"}
-

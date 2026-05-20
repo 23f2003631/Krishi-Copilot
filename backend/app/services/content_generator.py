@@ -167,13 +167,14 @@ class ContentGenerationService:
         import hashlib
         repo = get_repository()
         
-        # 1. Try Cache first
+        # 1. Try repository-generated content first. In local data mode this is a
+        # controlled, context-bound template pack rather than a static demo cache.
         cached = repo.generate_content(request)
         if cached and cached.get("variants"):
             logger.info("Cache hit for plan %s, recommendation %s", request.plan_id, request.recommendation_id)
             for v in cached["variants"]:
-                v["generation_source"] = "cache"
-            validated_variants = self._validate_and_fix(cached["variants"], source="cache")
+                v["generation_source"] = v.get("generation_source") or ("cache" if cached.get("source_mode") == "cached_demo" else "rules_template")
+            validated_variants = self._validate_and_fix(cached["variants"], source=cached.get("source_mode", "repository"))
             cached["variants"] = validated_variants
             # Hash fingerprinting for observability
             content_hash = hashlib.sha256(json.dumps([v.get("text", "") for v in validated_variants]).encode()).hexdigest()
