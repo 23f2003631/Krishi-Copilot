@@ -4,16 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import { chartTheme } from "@/lib/chart-theme";
 
-const data = [
+const fallbackData = [
   { label: "Delivered", baseline: 98, recommended: 98 },
   { label: "Opened", baseline: 23, recommended: 31 },
   { label: "Clicked", baseline: 5, recommended: 8 },
   { label: "Leads", baseline: 43, recommended: 69 },
 ];
 
-export function SegmentEngagementChart() {
+export function SegmentEngagementChart({ data = [] }: { data?: { label: string; baseline: number; recommended: number }[] }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
+  const chartData = data.length ? data : fallbackData.map((row) => ({ ...row, baseline: 0, recommended: 0 }));
 
   useEffect(() => {
     const root = rootRef.current;
@@ -36,7 +37,7 @@ export function SegmentEngagementChart() {
   return (
     <div ref={rootRef} className="h-full min-h-[180px] w-full min-w-0">
       {size.width > 20 && size.height > 20 ? (
-        <AreaChart width={size.width} height={size.height} data={data}>
+        <AreaChart width={size.width} height={size.height} data={chartData}>
           <defs>
             <linearGradient id="recommendedGradient" x1="0" x2="0" y1="0" y2="1">
               <stop offset="5%" stopColor={chartTheme.ai} stopOpacity={0.28} />
