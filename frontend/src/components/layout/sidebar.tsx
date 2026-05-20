@@ -13,14 +13,15 @@ export function SidebarNav({ activePath, className }: { activePath: string; clas
   return (
     <aside
       className={cn(
-        "hidden h-full w-16 shrink-0 flex-col items-center border-r border-[#0B5B34]/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(247,250,248,0.86))] py-5 shadow-[8px_0_34px_rgba(9,18,13,0.055),inset_-1px_0_0_rgba(255,255,255,0.78)] backdrop-blur-xl md:flex",
+        "flex h-full w-16 shrink-0 flex-col items-center border-r border-[#0B5B34]/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(247,250,248,0.86))] py-5 shadow-[8px_0_34px_rgba(9,18,13,0.055),inset_-1px_0_0_rgba(255,255,255,0.78)] backdrop-blur-xl",
         className
       )}
     >
       <nav className="mt-3 flex flex-col items-center gap-4" aria-label="Dashboard navigation">
         {items.slice(0, 7).map((item) => {
           const Icon = item.icon;
-          const active = item.href !== "#" && activePath.startsWith(item.href);
+          const itemPath = item.href.split("#")[0];
+          const active = itemPath !== "" && activePath.startsWith(itemPath);
           const isAnchor = item.href.startsWith("#");
 
           const content = (
@@ -56,14 +57,14 @@ export function SidebarNav({ activePath, className }: { activePath: string; clas
       </nav>
 
       <div className="mt-auto flex flex-col items-center gap-5 pb-3">
-        <button
-          type="button"
+        <Link
+          href="/planner#settings"
           className="flex h-10 w-10 items-center justify-center rounded-full text-[#5D6B62] transition-colors hover:bg-[#DDEADF]/55 hover:text-[#0B5B34]"
           aria-label="Settings"
           title="Settings"
         >
           <Settings className="h-5 w-5" />
-        </button>
+        </Link>
         <button
           type="button"
           className="flex h-9 w-9 items-center justify-center rounded-full border border-white bg-[linear-gradient(145deg,#DDEADF,#FFFFFF)] text-[#0B5B34] shadow-[0_8px_20px_rgba(9,18,13,0.12)]"
@@ -89,12 +90,12 @@ export function MobileSidebarNav({ activePath }: { activePath: string }) {
 
   return (
     <nav
-      className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-4 rounded-[18px] border border-[#0B5B34]/10 bg-white/86 p-1.5 shadow-[0_18px_50px_rgba(9,18,13,0.18),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-xl md:hidden"
+      className="hidden"
       aria-label="Mobile dashboard navigation"
     >
       {items.map((item) => {
         const Icon = item.icon;
-        const active = activePath.startsWith(item.href);
+        const active = activePath.startsWith(item.href.split("#")[0]);
 
         return (
           <Link
