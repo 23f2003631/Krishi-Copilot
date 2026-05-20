@@ -1,0 +1,49 @@
+{
+  "schema_version": "syngenta-copilot.v1",
+  "request_id": "REQ_ANALYTICS_001",
+  "generated_at": "2026-05-20T04:28:18.383119",
+  "source_mode": "ml",
+  "warnings": [],
+  "plan_id": "PLAN_SAMPLE_20260218",
+  "kpis": {
+    "target_growers": 572,
+    "predicted_open_rate": 0.5054,
+    "predicted_click_rate": 0.3469,
+    "expected_leads": 195,
+    "stock_ready_retailers": 4,
+    "field_actions": 10
+  },
+  "charts": {
+    "channel_mix": [
+      {
+        "channel": "whatsapp",
+        "share": 0.75
+      },
+      {
+        "channel": "field_rep",
+        "share": 0.15
+      },
+      {
+        "channel": "ivr",
+        "share": 0.1
+      }
+    ],
+    "weekly_funnel": [
+      {
+        "week": "2026-02-16",
+        "baseline": 28,
+        "recommended": 195
+      },
+      {
+        "week": "2026-02-23",
+        "baseline": 29,
+        "recommended": 204
+      },
+      {
+        "week": "2026-03-02",
+        "baseline": 27,
+        "recommended": 191
+      }
+    ]
+  }
+}

@@ -1,0 +1,641 @@
+{
+  "schema_version": "syngenta-copilot.v1",
+  "plan_id": "PLAN_SAMPLE_20260218",
+  "context_id": "CTX_SAMPLE",
+  "generated_at": "2026-05-20T04:28:17.726753",
+  "source_mode": "ml",
+  "recommendations": [
+    {
+      "recommendation_id": "7ba0becd-fc2",
+      "plan_id": "PLAN_WHEAT_UTT_20260218",
+      "priority_score": 46,
+      "segment_label": "Hindi Smartphone wheat growers (flowering_approaching)",
+      "target_count": 34,
+      "crop": "wheat",
+      "product": "Tilt 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "whatsapp",
+          "rank": 1,
+          "reason": "Primary digital channel \u2014 highest open rate for smartphone users"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "Follow-up reinforcement by territory rep"
+        },
+        {
+          "channel": "sms",
+          "rank": 3,
+          "reason": "Fallback if WhatsApp undelivered"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "high"
+      },
+      "receptivity": {
+        "open_probability": 0.4019,
+        "click_probability": 0.3264,
+        "confidence": 0.85
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.3264,
+        "expected_leads": 11
+      },
+      "reason_codes": [
+        "Crop near flowering stage",
+        "Active campaign execution in territory",
+        "Sufficient time before harvest"
+      ],
+      "human_review_flags": [],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "0ab8f0f9-e33",
+      "plan_id": "PLAN_WHEAT_UTT_20260218",
+      "priority_score": 39,
+      "segment_label": "Hindi Smartphone wheat growers (post_flowering)",
+      "target_count": 22,
+      "crop": "wheat",
+      "product": "Tilt 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "whatsapp",
+          "rank": 1,
+          "reason": "Primary digital channel \u2014 highest open rate for smartphone users"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "Follow-up reinforcement by territory rep"
+        },
+        {
+          "channel": "sms",
+          "rank": 3,
+          "reason": "Fallback if WhatsApp undelivered"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "high"
+      },
+      "receptivity": {
+        "open_probability": 0.5072,
+        "click_probability": 0.3802,
+        "confidence": 0.7
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.3802,
+        "expected_leads": 8
+      },
+      "reason_codes": [
+        "Crop near flowering stage",
+        "Active campaign execution in territory"
+      ],
+      "human_review_flags": [],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "14d7d8d6-b55",
+      "plan_id": "PLAN_WHEAT_UTT_20260218",
+      "priority_score": 32,
+      "segment_label": "Hindi Keypad/IVR wheat growers (post_flowering)",
+      "target_count": 88,
+      "crop": "wheat",
+      "product": "Tilt 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "field_rep",
+          "rank": 1,
+          "reason": "Device type unknown \u2014 default to in-person outreach"
+        },
+        {
+          "channel": "retailer",
+          "rank": 2,
+          "reason": "Retailer as secondary touchpoint"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "medium"
+      },
+      "receptivity": {
+        "open_probability": 0.5915,
+        "click_probability": 0.4585,
+        "confidence": 0.85
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.4585,
+        "expected_leads": 40
+      },
+      "reason_codes": [
+        "Crop near flowering stage",
+        "Large farm size (high-value grower)",
+        "Active campaign execution in territory"
+      ],
+      "human_review_flags": [
+        "Low engagement history \u2014 consider alternative channels"
+      ],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "2c3e6f7a-d48",
+      "plan_id": "PLAN_WHEAT_UTT_20260218",
+      "priority_score": 23,
+      "segment_label": "Hindi Smartphone wheat growers (tillering_soon)",
+      "target_count": 25,
+      "crop": "wheat",
+      "product": "Tilt 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "whatsapp",
+          "rank": 1,
+          "reason": "Primary digital channel \u2014 highest open rate for smartphone users"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "Follow-up reinforcement by territory rep"
+        },
+        {
+          "channel": "sms",
+          "rank": 3,
+          "reason": "Fallback if WhatsApp undelivered"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.5239,
+        "click_probability": 0.2946,
+        "confidence": 0.7
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.2946,
+        "expected_leads": 7
+      },
+      "reason_codes": [
+        "Crop near flowering stage",
+        "Sufficient time before harvest",
+        "Active campaign execution in territory"
+      ],
+      "human_review_flags": [],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "8d6f6074-a4f",
+      "plan_id": "PLAN_WHEAT_UTT_20260218",
+      "priority_score": 22,
+      "segment_label": "Hindi Smartphone wheat growers (early_vegetative)",
+      "target_count": 189,
+      "crop": "wheat",
+      "product": "Tilt 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "whatsapp",
+          "rank": 1,
+          "reason": "Primary digital channel \u2014 highest open rate for smartphone users"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "Follow-up reinforcement by territory rep"
+        },
+        {
+          "channel": "sms",
+          "rank": 3,
+          "reason": "Fallback if WhatsApp undelivered"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.4664,
+        "click_probability": 0.3278,
+        "confidence": 0.85
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.3278,
+        "expected_leads": 61
+      },
+      "reason_codes": [
+        "Crop approaching tillering stage",
+        "Sufficient time before harvest",
+        "Active campaign execution in territory"
+      ],
+      "human_review_flags": [],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "62518d8d-e20",
+      "plan_id": "PLAN_MUSTARD_RAJ_20260218",
+      "priority_score": 26,
+      "segment_label": "Hindi Smartphone mustard growers (unknown)",
+      "target_count": 80,
+      "crop": "mustard",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "whatsapp",
+          "rank": 1,
+          "reason": "Primary digital channel \u2014 highest open rate for smartphone users"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "Follow-up reinforcement by territory rep"
+        },
+        {
+          "channel": "sms",
+          "rank": 3,
+          "reason": "Fallback if WhatsApp undelivered"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "medium"
+      },
+      "receptivity": {
+        "open_probability": 0.5385,
+        "click_probability": 0.3578,
+        "confidence": 0.85
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.3578,
+        "expected_leads": 28
+      },
+      "reason_codes": [
+        "Crop near flowering stage",
+        "Age profile matches target segment",
+        "Sufficient time before harvest"
+      ],
+      "human_review_flags": [],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "dae1e7f9-8d5",
+      "plan_id": "PLAN_MUSTARD_RAJ_20260218",
+      "priority_score": 19,
+      "segment_label": "Hindi Keypad/IVR mustard growers (unknown)",
+      "target_count": 25,
+      "crop": "mustard",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "ivr",
+          "rank": 1,
+          "reason": "Voice-based outreach \u2014 keypad users cannot receive WhatsApp"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "In-person follow-up for non-digital growers"
+        },
+        {
+          "channel": "retailer",
+          "rank": 3,
+          "reason": "Retailer point-of-sale recommendation"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.734,
+        "click_probability": 0.3023,
+        "confidence": 0.7
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.3023,
+        "expected_leads": 7
+      },
+      "reason_codes": [
+        "Crop near flowering stage",
+        "Sufficient time before harvest",
+        "Large farm size (high-value grower)"
+      ],
+      "human_review_flags": [
+        "Low engagement history \u2014 consider alternative channels"
+      ],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "2c9d9a89-835",
+      "plan_id": "PLAN_MUSTARD_RAJ_20260218",
+      "priority_score": 0,
+      "segment_label": "Hindi Keypad/IVR mustard growers (unknown)",
+      "target_count": 2,
+      "crop": "mustard",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "ivr",
+          "rank": 1,
+          "reason": "Voice-based outreach \u2014 keypad users cannot receive WhatsApp"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "In-person follow-up for non-digital growers"
+        },
+        {
+          "channel": "retailer",
+          "rank": 3,
+          "reason": "Retailer point-of-sale recommendation"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "Hold",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.0,
+        "click_probability": 0.0,
+        "confidence": 0.0
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.0,
+        "expected_leads": 0
+      },
+      "reason_codes": [
+        "BLOCKED: Product out of stock in territory"
+      ],
+      "human_review_flags": [
+        "Stock guardrail triggered \u2014 campaign blocked until restocked"
+      ],
+      "blocked": true,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "48ca4ffb-4ce",
+      "plan_id": "PLAN_MUSTARD_RAJ_20260218",
+      "priority_score": 0,
+      "segment_label": "Hindi Smartphone mustard growers (unknown)",
+      "target_count": 9,
+      "crop": "mustard",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "whatsapp",
+          "rank": 1,
+          "reason": "Primary digital channel \u2014 highest open rate for smartphone users"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "Follow-up reinforcement by territory rep"
+        },
+        {
+          "channel": "sms",
+          "rank": 3,
+          "reason": "Fallback if WhatsApp undelivered"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "Hold",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.0,
+        "click_probability": 0.0,
+        "confidence": 0.0
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.0,
+        "expected_leads": 0
+      },
+      "reason_codes": [
+        "BLOCKED: Product out of stock in territory"
+      ],
+      "human_review_flags": [
+        "Stock guardrail triggered \u2014 campaign blocked until restocked"
+      ],
+      "blocked": true,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "dc8ec60e-b60",
+      "plan_id": "PLAN_CHICKPEA_MAD_20260218",
+      "priority_score": 23,
+      "segment_label": "Hindi Smartphone chickpea growers (unknown)",
+      "target_count": 79,
+      "crop": "chickpea",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "whatsapp",
+          "rank": 1,
+          "reason": "Primary digital channel \u2014 highest open rate for smartphone users"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "Follow-up reinforcement by territory rep"
+        },
+        {
+          "channel": "sms",
+          "rank": 3,
+          "reason": "Fallback if WhatsApp undelivered"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.4679,
+        "click_probability": 0.3295,
+        "confidence": 0.85
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.3295,
+        "expected_leads": 26
+      },
+      "reason_codes": [
+        "Crop near flowering stage",
+        "Sufficient time before harvest",
+        "Active campaign execution in territory"
+      ],
+      "human_review_flags": [],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "7c46043c-bf4",
+      "plan_id": "PLAN_CHICKPEA_MAD_20260218",
+      "priority_score": 20,
+      "segment_label": "Hindi Keypad/IVR chickpea growers (unknown)",
+      "target_count": 30,
+      "crop": "chickpea",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "ivr",
+          "rank": 1,
+          "reason": "Voice-based outreach \u2014 keypad users cannot receive WhatsApp"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "In-person follow-up for non-digital growers"
+        },
+        {
+          "channel": "retailer",
+          "rank": 3,
+          "reason": "Retailer point-of-sale recommendation"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "07:00-10:00",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.4199,
+        "click_probability": 0.236,
+        "confidence": 0.85
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.236,
+        "expected_leads": 7
+      },
+      "reason_codes": [
+        "Large farm size (high-value grower)",
+        "Crop near flowering stage",
+        "Age profile matches target segment"
+      ],
+      "human_review_flags": [
+        "Low engagement history \u2014 consider alternative channels"
+      ],
+      "blocked": false,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "9b592043-0db",
+      "plan_id": "PLAN_CHICKPEA_MAD_20260218",
+      "priority_score": 0,
+      "segment_label": "Hindi Keypad/IVR chickpea growers (unknown)",
+      "target_count": 1,
+      "crop": "chickpea",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "field_rep",
+          "rank": 1,
+          "reason": "Device type unknown \u2014 default to in-person outreach"
+        },
+        {
+          "channel": "retailer",
+          "rank": 2,
+          "reason": "Retailer as secondary touchpoint"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "Hold",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.0,
+        "click_probability": 0.0,
+        "confidence": 0.0
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.0,
+        "expected_leads": 0
+      },
+      "reason_codes": [
+        "BLOCKED: Product out of stock in territory"
+      ],
+      "human_review_flags": [
+        "Stock guardrail triggered \u2014 campaign blocked until restocked"
+      ],
+      "blocked": true,
+      "source_mode": "ml"
+    },
+    {
+      "recommendation_id": "c02f12e9-0f4",
+      "plan_id": "PLAN_CHICKPEA_MAD_20260218",
+      "priority_score": 0,
+      "segment_label": "Hindi Smartphone chickpea growers (unknown)",
+      "target_count": 4,
+      "crop": "chickpea",
+      "product": "Score 250 EC",
+      "channel_strategy": [
+        {
+          "channel": "whatsapp",
+          "rank": 1,
+          "reason": "Primary digital channel \u2014 highest open rate for smartphone users"
+        },
+        {
+          "channel": "field_rep",
+          "rank": 2,
+          "reason": "Follow-up reinforcement by territory rep"
+        },
+        {
+          "channel": "sms",
+          "rank": 3,
+          "reason": "Fallback if WhatsApp undelivered"
+        }
+      ],
+      "timing": {
+        "recommended_send_date": "2026-02-19",
+        "send_window": "Hold",
+        "urgency": "low"
+      },
+      "receptivity": {
+        "open_probability": 0.0,
+        "click_probability": 0.0,
+        "confidence": 0.0
+      },
+      "expected_impact": {
+        "baseline_click_rate": 0.05,
+        "expected_click_rate": 0.0,
+        "expected_leads": 0
+      },
+      "reason_codes": [
+        "BLOCKED: Product out of stock in territory"
+      ],
+      "human_review_flags": [
+        "Stock guardrail triggered \u2014 campaign blocked until restocked"
+      ],
+      "blocked": true,
+      "source_mode": "ml"
+    }
+  ]
+}

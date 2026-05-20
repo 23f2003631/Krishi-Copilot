@@ -1,0 +1,17 @@
+{
+  "training_timestamp": "2026-05-20T04:24:24.828187",
+  "train_period": "2025-10-06 to 2026-01-31",
+  "validation_period": "2026-02-01 to 2026-04-05",
+  "feature_version": "v3",
+  "metrics": {
+    "open_train_roc": 0.8390719658989526,
+    "open_valid_roc": 0.48829643937276035,
+    "click_valid_roc": 0.4715354586857514
+  },
+  "feature_count": 16,
+  "model_version": "v1.0.0",
+  "trained_on": "2025-10 to 2026-01",
+  "data_last_updated": "2026-02-18T00:00:00Z",
+  "inventory_snapshot": "2026-02-18T06:00:00Z",
+  "model_last_trained": "2026-02-17T22:00:00Z"
+}

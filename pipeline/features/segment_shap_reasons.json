@@ -1,0 +1,390 @@
+{
+  "Bengali Keypad/IVR lentil growers (unknown)": [
+    "Age profile matches target segment",
+    "Large farm size (high-value grower)",
+    "Product well-stocked locally"
+  ],
+  "Bengali Keypad/IVR mustard growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)"
+  ],
+  "Bengali Keypad/IVR potato growers (unknown)": [
+    "Sufficient time before harvest",
+    "Crop near flowering stage"
+  ],
+  "Bengali Keypad/IVR unknown growers (unknown)": [
+    "Crop near flowering stage",
+    "Product well-stocked locally",
+    "Territory has active rep coverage"
+  ],
+  "Bengali Keypad/IVR wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "Active campaign execution in territory"
+  ],
+  "Bengali Smartphone lentil growers (unknown)": [
+    "Sufficient time before harvest",
+    "Crop near flowering stage",
+    "Large farm size (high-value grower)"
+  ],
+  "Bengali Smartphone mustard growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Active campaign execution in territory"
+  ],
+  "Bengali Smartphone potato growers (unknown)": [
+    "Active campaign execution in territory",
+    "Large farm size (high-value grower)",
+    "Territory has active rep coverage"
+  ],
+  "Bengali Smartphone unknown growers (unknown)": [
+    "Active campaign execution in territory",
+    "Crop near flowering stage"
+  ],
+  "Bengali Smartphone wheat growers (early_vegetative)": [
+    "Crop approaching tillering stage",
+    "Active campaign execution in territory",
+    "Large farm size (high-value grower)"
+  ],
+  "Bengali Smartphone wheat growers (flowering_approaching)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "Sufficient time before harvest"
+  ],
+  "Bengali Smartphone wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Large farm size (high-value grower)",
+    "Territory has active rep coverage"
+  ],
+  "Bengali Smartphone wheat growers (tillering_soon)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Territory has active rep coverage"
+  ],
+  "Gujarati Keypad/IVR chickpea growers (unknown)": [
+    "Crop near flowering stage",
+    "Product well-stocked locally",
+    "Age profile matches target segment"
+  ],
+  "Gujarati Keypad/IVR cumin growers (unknown)": [
+    "Sufficient time before harvest",
+    "Active campaign execution in territory",
+    "Crop near flowering stage"
+  ],
+  "Gujarati Keypad/IVR mustard growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Territory has active rep coverage"
+  ],
+  "Gujarati Keypad/IVR unknown growers (unknown)": [
+    "Age profile matches target segment"
+  ],
+  "Gujarati Keypad/IVR wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Territory has active rep coverage",
+    "Large farm size (high-value grower)"
+  ],
+  "Gujarati Smartphone chickpea growers (unknown)": [
+    "Crop near flowering stage",
+    "Active campaign execution in territory",
+    "Age profile matches target segment"
+  ],
+  "Gujarati Smartphone cumin growers (unknown)": [
+    "Crop near flowering stage",
+    "Active campaign execution in territory",
+    "Age profile matches target segment"
+  ],
+  "Gujarati Smartphone mustard growers (unknown)": [
+    "Crop near flowering stage",
+    "Large farm size (high-value grower)",
+    "Territory has active rep coverage"
+  ],
+  "Gujarati Smartphone unknown growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage",
+    "Territory has active rep coverage"
+  ],
+  "Gujarati Smartphone wheat growers (early_vegetative)": [
+    "Crop approaching tillering stage",
+    "Large farm size (high-value grower)",
+    "Active campaign execution in territory"
+  ],
+  "Gujarati Smartphone wheat growers (flowering_approaching)": [
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage",
+    "Territory has active rep coverage"
+  ],
+  "Gujarati Smartphone wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Large farm size (high-value grower)",
+    "Product well-stocked locally"
+  ],
+  "Gujarati Smartphone wheat growers (tillering_soon)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Age profile matches target segment"
+  ],
+  "Hindi Keypad/IVR barley growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage",
+    "Product well-stocked locally"
+  ],
+  "Hindi Keypad/IVR chickpea growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage",
+    "Age profile matches target segment"
+  ],
+  "Hindi Keypad/IVR lentil growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Age profile matches target segment",
+    "Crop near flowering stage"
+  ],
+  "Hindi Keypad/IVR maize growers (unknown)": [
+    "Sufficient time before harvest",
+    "Territory has active rep coverage",
+    "Age profile matches target segment"
+  ],
+  "Hindi Keypad/IVR mustard growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)"
+  ],
+  "Hindi Keypad/IVR potato growers (unknown)": [
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage"
+  ],
+  "Hindi Keypad/IVR unknown growers (unknown)": [
+    "Age profile matches target segment",
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage"
+  ],
+  "Hindi Keypad/IVR wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Large farm size (high-value grower)",
+    "Active campaign execution in territory"
+  ],
+  "Hindi Smartphone barley growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)"
+  ],
+  "Hindi Smartphone chickpea growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Active campaign execution in territory"
+  ],
+  "Hindi Smartphone lentil growers (unknown)": [
+    "Sufficient time before harvest",
+    "Age profile matches target segment",
+    "Territory has active rep coverage"
+  ],
+  "Hindi Smartphone maize growers (unknown)": [
+    "Territory has active rep coverage",
+    "Sufficient time before harvest",
+    "Crop near flowering stage"
+  ],
+  "Hindi Smartphone mustard growers (unknown)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "Sufficient time before harvest"
+  ],
+  "Hindi Smartphone potato growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Sufficient time before harvest",
+    "Crop near flowering stage"
+  ],
+  "Hindi Smartphone unknown growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Territory has active rep coverage",
+    "Crop near flowering stage"
+  ],
+  "Hindi Smartphone wheat growers (early_vegetative)": [
+    "Crop approaching tillering stage",
+    "Sufficient time before harvest",
+    "Active campaign execution in territory"
+  ],
+  "Hindi Smartphone wheat growers (flowering_approaching)": [
+    "Crop near flowering stage",
+    "Active campaign execution in territory",
+    "Sufficient time before harvest"
+  ],
+  "Hindi Smartphone wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Active campaign execution in territory"
+  ],
+  "Hindi Smartphone wheat growers (tillering_soon)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Active campaign execution in territory"
+  ],
+  "Kannada Keypad/IVR chickpea growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Age profile matches target segment",
+    "Crop near flowering stage"
+  ],
+  "Kannada Keypad/IVR safflower growers (unknown)": [
+    "Sufficient time before harvest",
+    "Age profile matches target segment",
+    "Large farm size (high-value grower)"
+  ],
+  "Kannada Keypad/IVR unknown growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Active campaign execution in territory",
+    "Crop near flowering stage"
+  ],
+  "Kannada Keypad/IVR wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "Large farm size (high-value grower)"
+  ],
+  "Kannada Smartphone chickpea growers (unknown)": [
+    "Crop near flowering stage",
+    "Large farm size (high-value grower)",
+    "Product well-stocked locally"
+  ],
+  "Kannada Smartphone safflower growers (unknown)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "Sufficient time before harvest"
+  ],
+  "Kannada Smartphone unknown growers (unknown)": [
+    "Age profile matches target segment",
+    "Territory has active rep coverage",
+    "Crop near flowering stage"
+  ],
+  "Kannada Smartphone wheat growers (early_vegetative)": [
+    "Crop approaching tillering stage",
+    "Age profile matches target segment",
+    "Sufficient time before harvest"
+  ],
+  "Kannada Smartphone wheat growers (flowering_approaching)": [
+    "Large farm size (high-value grower)",
+    "Age profile matches target segment",
+    "Crop near flowering stage"
+  ],
+  "Kannada Smartphone wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "Active campaign execution in territory"
+  ],
+  "Kannada Smartphone wheat growers (tillering_soon)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest"
+  ],
+  "Marathi Keypad/IVR chickpea growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage"
+  ],
+  "Marathi Keypad/IVR safflower growers (unknown)": [
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)",
+    "Age profile matches target segment"
+  ],
+  "Marathi Keypad/IVR unknown growers (unknown)": [
+    "Age profile matches target segment",
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage"
+  ],
+  "Marathi Keypad/IVR wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "Large farm size (high-value grower)"
+  ],
+  "Marathi Smartphone chickpea growers (unknown)": [
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage",
+    "Sufficient time before harvest"
+  ],
+  "Marathi Smartphone safflower growers (unknown)": [
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage"
+  ],
+  "Marathi Smartphone unknown growers (unknown)": [
+    "Age profile matches target segment",
+    "Product well-stocked locally",
+    "Crop near flowering stage"
+  ],
+  "Marathi Smartphone wheat growers (early_vegetative)": [
+    "Crop approaching tillering stage",
+    "Sufficient time before harvest",
+    "Age profile matches target segment"
+  ],
+  "Marathi Smartphone wheat growers (flowering_approaching)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "In critical crop stage window"
+  ],
+  "Marathi Smartphone wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Age profile matches target segment",
+    "Large farm size (high-value grower)"
+  ],
+  "Marathi Smartphone wheat growers (tillering_soon)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Product well-stocked locally"
+  ],
+  "Punjabi Keypad/IVR chickpea growers (unknown)": [
+    "Crop near flowering stage"
+  ],
+  "Punjabi Keypad/IVR mustard growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Territory has active rep coverage"
+  ],
+  "Punjabi Keypad/IVR potato growers (unknown)": [
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage"
+  ],
+  "Punjabi Keypad/IVR unknown growers (unknown)": [
+    "Active campaign execution in territory",
+    "Crop near flowering stage",
+    "Product well-stocked locally"
+  ],
+  "Punjabi Keypad/IVR wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Large farm size (high-value grower)",
+    "Age profile matches target segment"
+  ],
+  "Punjabi Smartphone chickpea growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest"
+  ],
+  "Punjabi Smartphone mustard growers (unknown)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest"
+  ],
+  "Punjabi Smartphone potato growers (unknown)": [
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)",
+    "Crop near flowering stage"
+  ],
+  "Punjabi Smartphone unknown growers (unknown)": [
+    "Age profile matches target segment",
+    "Crop near flowering stage",
+    "Large farm size (high-value grower)"
+  ],
+  "Punjabi Smartphone wheat growers (early_vegetative)": [
+    "Crop approaching tillering stage",
+    "Large farm size (high-value grower)",
+    "Sufficient time before harvest"
+  ],
+  "Punjabi Smartphone wheat growers (flowering_approaching)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "In critical crop stage window"
+  ],
+  "Punjabi Smartphone wheat growers (post_flowering)": [
+    "Crop near flowering stage",
+    "Product well-stocked locally"
+  ],
+  "Punjabi Smartphone wheat growers (tillering_soon)": [
+    "Crop near flowering stage",
+    "Sufficient time before harvest",
+    "Large farm size (high-value grower)"
+  ]
+}
