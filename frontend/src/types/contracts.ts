@@ -106,6 +106,7 @@ export interface DataQualityWarning {
 
 export interface Recommendation {
   recommendation_id: string;
+  plan_id?: string;
   priority_score: number;
   segment_label: string;
   target_count: number;
@@ -198,6 +199,7 @@ export interface AnalyticsSummaryResponse extends ApiEnvelope {
   charts: {
     channel_mix: { channel: Channel; share: number }[];
     weekly_funnel: { week: string; baseline: number; recommended: number }[];
+    engagement_funnel?: { label: string; baseline: number; recommended: number }[];
   };
 }
 
