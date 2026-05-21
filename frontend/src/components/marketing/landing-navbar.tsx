@@ -18,7 +18,7 @@ export function LandingNavbar({ scrolled }: { scrolled: boolean }) {
         <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-[#B7D8C3] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
           <Sprout className="h-4 w-4" />
         </span>
-        <span className="text-[15px] font-semibold text-white">AgriAI</span>
+        <span className="text-[15px] font-semibold text-white">Krishi Copilot</span>
       </Link>
 
       <div className="hidden items-center gap-8 text-[12px] font-semibold text-white/66 md:flex">
